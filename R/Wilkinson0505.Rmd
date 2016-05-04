@@ -1,0 +1,322 @@
+---
+title: "Income Inequality vs Index of Health and Social Problems"
+author: "coop711"
+date: "2015년 5월 3일"
+output: html_document
+---
+
+Data Preparation
+----------------
+
+`xlsx` package은 Excel 자료를 다루는 데 매우 유용한데, `read.xlsx(filename, n)`의 구조로 되어 있으며, 여기서 `n`은 엑셀 시트의 번호이다.
+
+```{r message=FALSE}
+# install.packages("xlsx", repos="http://cran.rstudio.com")
+library(xlsx)
+```
+
+Equality Trust에서 기부금을 받고 제공하는 두 종류의 자료 중 23개 국가의 각종 지표를 비교한 것을 읽어들이면,
+
+```{r}
+data.full<-read.xlsx("../data/international-inequality.xls", 1)
+str(data.full)
+```
+
+이 자료 중 소득불평등을 나타내는 지표는 5분위계수로서 두번째 컬럼에 `Income.inequality`라는 이름으로 나와 있고, 건강과 사회문제 지표는 13번째 컬럼에 `Index.of.health...social_problems`라는 이름으로 주어져 있다. 나라들은 `Country`라는 변수명으로 첫번째 컬럼에 나와 있다. 그리고, 건강과 사회문제 지표에 결측치들이 있기 때문에 먼저 이 나라들을 제외하고 분석작업을 수행하여야 한다.
+
+```{r}
+which(is.na(data.full$Index.of.health...social_problems))
+```
+
+결측치가 있는 나라를 빼고, 필요한 변수만 챙겨서 새로운 data frame 을 구성하기 위하여 건강과 사회문제 지표의 위치를 찾아보자.
+
+```{r}
+names(data.full)
+which(names(data.full)=="Index.of.health...social_problems")
+```
+
+새로운 data frame 을 `data.1` 으로 저장하자. 시각적 가독성을 높이기 위하여 자릿수를 조정한다.
+
+```{r}
+options(digits=2)
+data.1<-data.full[-c(11, 18), c(1, 2, 13)]
+data.1
+```
+
+
+Plots
+-----
+
+`plot` 과 기타 작업의 편의를 위하여 `data.1`을 검색 목록에 올린다. 
+
+```{r}
+attach(data.1)
+```
+
+우선 소득불평등과 건강 및 사회문제 지표의 관계를 대략적으로 살펴보면,
+
+```{r}
+plot(Index.of.health...social_problems~Income.inequality, data=data.1)
+```
+
+매우 높은 양의 상관관계(r = `r cor(data.1[,2], data.1[,3])`) 가 관찰됨을 알 수 있다. 
+
+각 점이 어느 나라를 나타내는지 표시하기 위하여 `text()` 를 활용하자. 동그라미 대신 까만 점으로 표시하고, 나라 이름을 올려보자.
+
+```{r fig.width=8, fig.height=6}
+plot(Index.of.health...social_problems~Income.inequality, data=data.1, pch=20)
+text(Income.inequality, Index.of.health...social_problems, labels=Country)
+```
+
+text label의 위치 기본값은 바로 점 위임을 알 수 있다. 위치 선정에 가능한 값들을 넣어보자. 
+
+```{r fig.width=8, fig.height=6}
+plot(Index.of.health...social_problems~Income.inequality, data=data.1, pch=20)
+text(Income.inequality, Index.of.health...social_problems, labels=Country, pos=1)
+```
+
+```{r fig.width=8, fig.height=6}
+plot(Index.of.health...social_problems~Income.inequality, data=data.1, pch=20)
+text(Income.inequality, Index.of.health...social_problems, labels=Country, pos=2)
+```
+
+```{r fig.width=8, fig.height=6}
+plot(Index.of.health...social_problems~Income.inequality, data=data.1, pch=20)
+text(Income.inequality, Index.of.health...social_problems, labels=Country, pos=3)
+```
+
+```{r fig.width=8, fig.height=6}
+plot(Index.of.health...social_problems~Income.inequality, data=data.1, pch=20)
+text(Income.inequality, Index.of.health...social_problems, labels=Country, pos=4)
+```
+
+우선 x-축과 y-축의 범위를 `xlim=c(3, 9), ylim=c(-1.5, 2.5)`로 하여 미국과 일본의 라벨이 도표 밖으로 나가지 않게 하자. `pos=4`로 하고 `cex=0.8`로 하여 글자 크기를 줄여보면, 
+
+```{r fig.width=8, fig.height=6}
+plot(Index.of.health...social_problems~Income.inequality, data=data.1, pch=20, xlim=c(3, 9), ylim=c(-1.5, 2.5))
+text(Income.inequality, Index.of.health...social_problems, labels=Country, pos=4, cex=0.8)
+```
+
+오스트리아, 덴마크, 독일, 네덜란드의 라벨만 점 왼편에 위치시켜 보자. 각 인덱스를 찾아보면,
+
+```{r}
+which(Country %in% c("Austria", "Denmark", "Germany", "Netherlands"))
+text.left<-which(Country %in% c("Austria", "Denmark", "Germany", "Netherlands"))
+text.left
+text.right<-(1:21)[-text.left]
+text.right
+```
+
+```{r fig.width=8, fig.height=6}
+plot(Index.of.health...social_problems~Income.inequality, data=data.1, pch=20, xlim=c(3, 9), ylim=c(-1.5, 2.5))
+text(Income.inequality[text.right], Index.of.health...social_problems[text.right], labels=Country[text.right], pos=4, cex=0.8)
+text(Income.inequality[text.left], Index.of.health...social_problems[text.left], labels=Country[text.left], pos=2, cex=0.8)
+```
+
+독일의 라벨을 위로 붙이면 보기가 나아질 것으로 생각되므로,
+
+```{r}
+which(Country == "Germany")
+text.up<-which(Country == "Germany")
+text.up
+which(text.left==text.up)
+text.left<-text.left[!(text.left == text.up)]
+text.left
+```
+
+이제 조정된 text 외에 x-축과 y-축에 적절한 라벨과 메인 타이틀을 넣어보자.
+
+```{r fig.width=8, fig.height=6}
+plot(Index.of.health...social_problems~Income.inequality, data=data.1, pch=20, xlim=c(3, 9), ylim=c(-1.5, 2.5), ann=FALSE)
+text(Income.inequality[text.right], Index.of.health...social_problems[text.right], labels=Country[text.right], pos=4, cex=0.8)
+text(Income.inequality[text.left], Index.of.health...social_problems[text.left], labels=Country[text.left], pos=2, cex=0.8)
+text(Income.inequality[text.up], Index.of.health...social_problems[text.up], labels=Country[text.up], pos=3, cex=0.8)
+title(main="Income Inequality vs Index of Health and Social Problems", xlab="Income Inequality", ylab="Index of Health and Social Problems")
+```
+
+건강 및 사회문제 지표의 경우 어느 방향이 좋은지 알 수 없으므로 친절하게 도표의 주변에(margin)에 알려주려면,
+
+```{r fig.width=8, fig.height=6}
+plot(Index.of.health...social_problems~Income.inequality, data=data.1, pch=20, xlim=c(3, 9), ylim=c(-1.5, 2.5), ann=FALSE)
+text(Income.inequality[text.right], Index.of.health...social_problems[text.right], labels=Country[text.right], pos=4, cex=0.8)
+text(Income.inequality[text.left], Index.of.health...social_problems[text.left], labels=Country[text.left], pos=2, cex=0.8)
+text(Income.inequality[text.up], Index.of.health...social_problems[text.up], labels=Country[text.up], pos=3, cex=0.8)
+title(main="Income Inequality vs Index of Health and Social Problems", xlab="Income Inequality", ylab="Index of Health and Social Problems")
+mtext("Worse", side=2, at=2.8, las=1)
+mtext("Better", side=2, at=-1.8, las=1)
+```
+
+한글화 작업
+-----------
+
+국가명을 한글로 만들어 `Country.kr`로 저장하자.
+
+```{r}
+Country.kr<-c("호주", "오스트리아", "벨기에", "캐나다", "덴마크",
+"핀란드", "프랑스", "독일", "그리스", "아일랜드", "이탈리아",
+"일본", "네덜란드", "뉴질랜드", "노르웨이", "포르투갈",
+"스페인", "스웨덴", "스위스", "영국", "미국")
+```
+
+```{r fig.width=8, fig.height=6}
+plot(Index.of.health...social_problems~Income.inequality, data=data.1, pch=20, xlim=c(3, 9), ylim=c(-1.5, 2.5), ann=FALSE)
+text(Income.inequality[text.right], Index.of.health...social_problems[text.right], labels=Country.kr[text.right], pos=4, cex=0.8)
+text(Income.inequality[text.left], Index.of.health...social_problems[text.left], labels=Country.kr[text.left], pos=2, cex=0.8)
+text(Income.inequality[text.up], Index.of.health...social_problems[text.up], labels=Country.kr[text.up], pos=3, cex=0.8)
+title(main="소득불평등과 건강 및 사회문제 지수", xlab="소득불평등(소득5분위계수)", ylab="건강 및 사회문제 지수")
+mtext("나쁨", side=2, at=2.8, las=1)
+mtext("좋음", side=2, at=-1.8, las=1)
+```
+
+끝으로 두 변수 간의 상관계수 r = `r cor(data.1[,2], data.1[,3])` 를 도표 안에 표시하려면, 좌표를 잡아서
+
+```{r fig.width=8, fig.height=6}
+plot(Index.of.health...social_problems~Income.inequality, data=data.1, pch=20, xlim=c(3, 9), ylim=c(-1.5, 2.5), ann=FALSE)
+text(Income.inequality[text.right], Index.of.health...social_problems[text.right], labels=Country.kr[text.right], pos=4, cex=0.8)
+text(Income.inequality[text.left], Index.of.health...social_problems[text.left], labels=Country.kr[text.left], pos=2, cex=0.8)
+text(Income.inequality[text.up], Index.of.health...social_problems[text.up], labels=Country.kr[text.up], pos=3, cex=0.8)
+text(x=5, y=1.5, labels=paste("r =", round(cor(data.1[,2], data.1[,3]), digits=2)))
+title(main="소득불평등과 건강 및 사회문제 지수", xlab="소득불평등(소득5분위계수)", ylab="건강 및 사회문제 지수")
+mtext("나쁨", side=2, at=2.8, las=1)
+mtext("좋음", side=2, at=-1.8, las=1)
+```
+
+* 단순 회귀선 삽입
+
+```{r fig.width=8, fig.height=6}
+lm.ineq <- lm(Index.of.health...social_problems~Income.inequality, data = data.1)
+plot(Index.of.health...social_problems~Income.inequality, data=data.1, pch=20, xlim=c(3, 9), ylim=c(-1.5, 2.5), ann=FALSE)
+abline(lm.ineq$coefficients, col="red")
+text(Income.inequality[text.right], Index.of.health...social_problems[text.right], labels=Country.kr[text.right], pos=4, cex=0.8)
+text(Income.inequality[text.left], Index.of.health...social_problems[text.left], labels=Country.kr[text.left], pos=2, cex=0.8)
+text(Income.inequality[text.up], Index.of.health...social_problems[text.up], labels=Country.kr[text.up], pos=3, cex=0.8)
+text(x=5, y=1.5, labels=paste("r =", round(cor(data.1[,2], data.1[,3]), digits=2)))
+title(main="소득불평등과 건강 및 사회문제 지수", xlab="소득불평등(소득5분위계수)", ylab="건강 및 사회문제 지수")
+mtext("나쁨", side=2, at=2.8, las=1)
+mtext("좋음", side=2, at=-1.8, las=1)
+```
+
+미국의 경우
+-----------
+
+`xlsx` 패키지를 이용하여 자료를 읽어들인다. 
+
+```{r}
+data.usa<-read.xlsx("../data/USA-inequality.xls", 1)
+str(data.usa)
+```
+
+당장 필요한 변수들만 모아서 data frame으로 재구성한다. 변수명 설정에 유의한다.
+
+```{r}
+data.usa.1<-data.frame(Abb=data.usa$State.Abbrev, Gini=data.usa$Income.Inequality, HS.index=data.usa$Index.of.health...social.problems)
+options(digits=3)
+data.usa.1
+```
+
+간단한 산점도를 그리고, 추가 작업을 생각한다.
+
+```{r fig.width=12, fig.height=9}
+plot(HS.index~Gini, data=data.usa.1)
+```
+
+x-축과 y-축의 범위를 설정하고, `pch=20`으로 다시 그린다.
+
+```{r fig.width=12, fig.height=9}
+plot(HS.index~Gini, data=data.usa.1, pch=20, xlim=c(0.39, 0.51), ylim=c(-1.5, 2.0))
+```
+
+각 주의 약칭을 새겨넣는다.
+
+```{r fig.width=12, fig.height=9}
+plot(HS.index~Gini, data=data.usa.1, pch=20, xlim=c(0.39, 0.51), ylim=c(-1.5, 2.0))
+text(data.usa.1$Gini, data.usa.1$HS.index, labels=data.usa.1$Abb, pos=4)
+```
+
+겹쳐보이는 주의 약칭들로부터 인덱스를 추출한다.
+
+```{r}
+which(data.usa.1$Abb %in% c("VT", "ME", "NE", "WA", "VA", "HI", "RI", "SC", "AR", "NC", "GA", "KY"))
+```
+
+점 왼쪽에 약칭을 넣을 주들의 인덱스를 저장한다. 나머지 인덱스는 오른쪽에 넣을 것으로 따로 저장한다.
+
+```{r}
+text.left<-which(data.usa.1$Abb %in% c("VT", "ME", "NE", "WA", "VA", "HI", "RI", "SC", "AR", "NC", "GA", "KY"))
+text.right<-(1:50)[-text.left]
+```
+
+왼쪽, 오른쪽 위치를 조정한 주 약칭을 다시 넣는다.
+
+```{r fig.width=12, fig.height=9}
+plot(HS.index~Gini, data=data.usa.1, pch=20, xlim=c(0.39, 0.51), ylim=c(-1.5, 2.0))
+text(data.usa.1$Gini[text.right], data.usa.1$HS.index[text.right], labels=data.usa.1$Abb[text.right], pos=4)
+text(data.usa.1$Gini[text.left], data.usa.1$HS.index[text.left], labels=data.usa.1$Abb[text.left], pos=2)
+```
+
+점 아래에 약칭을 넣을 주들의 인덱스를 찾는다. 왼쪽 인덱스, 오른쪽 인덱스에서 조정한다.
+
+```{r}
+text.down<-which(data.usa.1$Abb %in% c("WA", "AR", "GA", "MN"))
+which(text.left %in% text.down)
+text.left<-text.left[!(text.left %in% text.down)]
+text.right<-text.right[!(text.right %in% text.down)]
+```
+
+약칭 위치를 아래로 조정한 산점도를 다시 그린다.
+
+```{r fig.width=12, fig.height=9}
+plot(HS.index~Gini, data=data.usa.1, pch=20, xlim=c(0.39, 0.51), ylim=c(-1.5, 2.0))
+text(data.usa.1$Gini[text.right], data.usa.1$HS.index[text.right], labels=data.usa.1$Abb[text.right], pos=4)
+text(data.usa.1$Gini[text.left], data.usa.1$HS.index[text.left], labels=data.usa.1$Abb[text.left], pos=2)
+text(data.usa.1$Gini[text.down], data.usa.1$HS.index[text.down], labels=data.usa.1$Abb[text.down], pos=1)
+```
+
+
+상관계수를 추가한다.
+
+```{r fig.width=12, fig.height=9}
+plot(HS.index~Gini, data=data.usa.1, pch=20, xlim=c(0.39, 0.51), ylim=c(-1.5, 2.0))
+text(data.usa.1$Gini[text.right], data.usa.1$HS.index[text.right], labels=data.usa.1$Abb[text.right], pos=4)
+text(data.usa.1$Gini[text.left], data.usa.1$HS.index[text.left], labels=data.usa.1$Abb[text.left], pos=2)
+text(data.usa.1$Gini[text.down], data.usa.1$HS.index[text.down], labels=data.usa.1$Abb[text.down], pos=1)
+text(x=0.42, y=1.5, labels=paste("r =", round(cor(data.usa.1$HS.index, data.usa.1$Gini), digits=2)), col="red", cex=2)
+```
+
+단순회귀선을 추가한다.
+
+```{r fig.width=12, fig.height=9}
+plot(HS.index~Gini, data=data.usa.1, pch=20, xlim=c(0.39, 0.51), ylim=c(-1.5, 2.0))
+text(data.usa.1$Gini[text.right], data.usa.1$HS.index[text.right], labels=data.usa.1$Abb[text.right], pos=4)
+text(data.usa.1$Gini[text.left], data.usa.1$HS.index[text.left], labels=data.usa.1$Abb[text.left], pos=2)
+text(data.usa.1$Gini[text.down], data.usa.1$HS.index[text.down], labels=data.usa.1$Abb[text.down], pos=1)
+text(x=0.42, y=1.5, labels=paste("r =", round(cor(data.usa.1$HS.index, data.usa.1$Gini), digits=2)), col="red", cex=2)
+abline(lm(HS.index~Gini, data=data.usa.1)$coefficient)
+```
+
+주제목을 추가하고, `xlab`, `ylab`을 수정한다. 수직축의 의미를 명확히 한다.
+
+```{r fig.width=12, fig.height=9}
+plot(HS.index~Gini, data=data.usa.1, pch=20, xlim=c(0.39, 0.51), ylim=c(-1.5, 2.0), ann=FALSE)
+text(data.usa.1$Gini[text.right], data.usa.1$HS.index[text.right], labels=data.usa.1$Abb[text.right], pos=4)
+text(data.usa.1$Gini[text.left], data.usa.1$HS.index[text.left], labels=data.usa.1$Abb[text.left], pos=2)
+text(data.usa.1$Gini[text.down], data.usa.1$HS.index[text.down], labels=data.usa.1$Abb[text.down], pos=1)
+text(x=0.42, y=1.5, labels=paste("r =", round(cor(data.usa.1$HS.index, data.usa.1$Gini), digits=2)), col="red", cex=2)
+abline(lm(HS.index~Gini, data=data.usa.1)$coefficient)
+mtext("Worse", side=2, at=2.3, las=1)
+mtext("Better", side=2, at=-1.8, las=1)
+title(main="Income Inequality vs Health and Social Index (USA)", xlab="Gini Coefficients", ylab="Index of Health and Social Problems")
+```
+
+뒷 마무리
+---------
+
+
+
+
+
+
+
+
+
+

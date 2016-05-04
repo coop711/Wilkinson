@@ -1,0 +1,966 @@
+# 이스라엘과 싱가포르를 자료에서 제거하기까지
+R > setwd("~/Dropbox/works/Case_studies_in_stat/R.WD/inequality/")
+R > load("inequality_vs_social_problems.rda")
+R > ls()
+[1] "international.inequality" "mean.zscores.rev"         "prod.vs.income"           "zscores"                  "zscores.rev"             
+R > country<-international.inequality[,1]
+R > inequality.index<-international.inequality[,2]
+R > cbind(country,inequality.index)
+      country       inequality.index
+ [1,] "Australia"   "7"             
+ [2,] "Austria"     "4.82"          
+ [3,] "Belgium"     "4.6"           
+ [4,] "Canada"      "5.63"          
+ [5,] "Denmark"     "4.3"           
+ [6,] "Finland"     "3.72"          
+ [7,] "France"      "5.6"           
+ [8,] "Germany"     "5.2"           
+ [9,] "Greece"      "6.2"           
+[10,] "Ireland"     "6.05"          
+[11,] "Israel"      "6.78"          
+[12,] "Italy"       "6.65"          
+[13,] "Japan"       "3.4"           
+[14,] "Netherlands" "5.3"           
+[15,] "New Zealand" "6.8"           
+[16,] "Norway"      "3.85"          
+[17,] "Portugal"    "8"             
+[18,] "Singapore"   "9.7"           
+[19,] "Spain"       "5.55"          
+[20,] "Sweden"      "3.95"          
+[21,] "Switzerland" "5.73"          
+[22,] "UK"          "7.17"          
+[23,] "USA"         "8.55"          
+R > names(international.inequality)
+ [1] "Country"                           "Income.inequality"                 "Trust"                             "Life.expectancy"                  
+ [5] "Infant.mortality"                  "Obesity"                           "Mental.illness"                    "Maths.and.literacy.scores"        
+ [9] "Teenage.births"                    "Homicides"                         "Imprisonment..log."                "Social.mobility"                  
+[13] "Index.of.health...social_problems" "Child.overweight"                  "Drugs.index"                       "Calorie.intake"                   
+[17] "Public.health.expenditure"         "Child.wellbeing"                   "Maths.education.science.score"     "Child.conflict"                   
+[21] "Foreign.aid"                       "Recycling"                         "Peace.index"                       "Maternity.leave"                  
+[25] "Advertising"                       "Police"                            "Social.expenditure"                "Women.s_status"                   
+[29] "Lone.parents"                     
+R > health.social.index<-international.inequality$Index.of.health...social_problems
+R > ls()
+[1] "country"                  "health.social.index"      "inequality.index"         "international.inequality" "mean.zscores.rev"        
+[6] "prod.vs.income"           "zscores"                  "zscores.rev"             
+R > variables.with.NA<-is.na(international.inequality)
+R > variables.with.NA
+      Country Income.inequality Trust Life.expectancy Infant.mortality Obesity Mental.illness Maths.and.literacy.scores Teenage.births Homicides Imprisonment..log.
+ [1,]   FALSE             FALSE FALSE           FALSE            FALSE   FALSE          FALSE                     FALSE          FALSE     FALSE              FALSE
+ [2,]   FALSE             FALSE FALSE           FALSE            FALSE   FALSE           TRUE                     FALSE          FALSE     FALSE              FALSE
+ [3,]   FALSE             FALSE FALSE           FALSE            FALSE   FALSE          FALSE                     FALSE          FALSE     FALSE              FALSE
+ [4,]   FALSE             FALSE FALSE           FALSE            FALSE   FALSE          FALSE                     FALSE          FALSE     FALSE              FALSE
+ [5,]   FALSE             FALSE FALSE           FALSE            FALSE   FALSE           TRUE                     FALSE          FALSE     FALSE              FALSE
+ [6,]   FALSE             FALSE FALSE           FALSE            FALSE   FALSE           TRUE                     FALSE          FALSE     FALSE              FALSE
+ [7,]   FALSE             FALSE FALSE           FALSE            FALSE   FALSE          FALSE                     FALSE          FALSE     FALSE              FALSE
+ [8,]   FALSE             FALSE FALSE           FALSE            FALSE   FALSE          FALSE                     FALSE          FALSE     FALSE              FALSE
+ [9,]   FALSE             FALSE FALSE           FALSE            FALSE   FALSE           TRUE                     FALSE          FALSE     FALSE              FALSE
+[10,]   FALSE             FALSE FALSE           FALSE            FALSE   FALSE           TRUE                     FALSE          FALSE     FALSE              FALSE
+[11,]   FALSE             FALSE FALSE           FALSE            FALSE    TRUE           TRUE                     FALSE           TRUE     FALSE              FALSE
+[12,]   FALSE             FALSE FALSE           FALSE            FALSE   FALSE          FALSE                     FALSE          FALSE     FALSE              FALSE
+[13,]   FALSE             FALSE FALSE           FALSE            FALSE   FALSE          FALSE                     FALSE          FALSE     FALSE              FALSE
+[14,]   FALSE             FALSE FALSE           FALSE            FALSE   FALSE          FALSE                     FALSE          FALSE     FALSE              FALSE
+[15,]   FALSE             FALSE FALSE           FALSE            FALSE   FALSE          FALSE                     FALSE          FALSE     FALSE              FALSE
+[16,]   FALSE             FALSE FALSE           FALSE            FALSE   FALSE           TRUE                     FALSE          FALSE     FALSE              FALSE
+[17,]   FALSE             FALSE FALSE           FALSE            FALSE   FALSE           TRUE                     FALSE          FALSE     FALSE              FALSE
+[18,]   FALSE             FALSE FALSE           FALSE            FALSE    TRUE           TRUE                      TRUE           TRUE     FALSE              FALSE
+[19,]   FALSE             FALSE FALSE           FALSE            FALSE   FALSE          FALSE                     FALSE          FALSE     FALSE              FALSE
+[20,]   FALSE             FALSE FALSE           FALSE            FALSE   FALSE           TRUE                     FALSE          FALSE     FALSE              FALSE
+[21,]   FALSE             FALSE FALSE           FALSE            FALSE   FALSE           TRUE                     FALSE          FALSE     FALSE              FALSE
+[22,]   FALSE             FALSE FALSE           FALSE            FALSE   FALSE          FALSE                      TRUE          FALSE     FALSE              FALSE
+[23,]   FALSE             FALSE FALSE           FALSE            FALSE   FALSE          FALSE                     FALSE          FALSE     FALSE              FALSE
+      Social.mobility Index.of.health...social_problems Child.overweight Drugs.index Calorie.intake Public.health.expenditure Child.wellbeing
+ [1,]            TRUE                             FALSE             TRUE       FALSE          FALSE                     FALSE           FALSE
+ [2,]            TRUE                             FALSE            FALSE       FALSE          FALSE                     FALSE           FALSE
+ [3,]            TRUE                             FALSE            FALSE       FALSE          FALSE                     FALSE           FALSE
+ [4,]           FALSE                             FALSE            FALSE       FALSE          FALSE                     FALSE           FALSE
+ [5,]           FALSE                             FALSE            FALSE       FALSE          FALSE                     FALSE           FALSE
+ [6,]           FALSE                             FALSE            FALSE       FALSE          FALSE                     FALSE           FALSE
+ [7,]            TRUE                             FALSE            FALSE       FALSE          FALSE                     FALSE           FALSE
+ [8,]           FALSE                             FALSE            FALSE       FALSE          FALSE                     FALSE           FALSE
+ [9,]            TRUE                             FALSE            FALSE       FALSE          FALSE                     FALSE           FALSE
+[10,]            TRUE                             FALSE            FALSE       FALSE          FALSE                     FALSE           FALSE
+[11,]            TRUE                              TRUE            FALSE       FALSE           TRUE                     FALSE           FALSE
+[12,]            TRUE                             FALSE            FALSE       FALSE          FALSE                     FALSE           FALSE
+[13,]            TRUE                             FALSE             TRUE       FALSE          FALSE                     FALSE           FALSE
+[14,]            TRUE                             FALSE            FALSE       FALSE          FALSE                     FALSE           FALSE
+[15,]            TRUE                             FALSE             TRUE       FALSE          FALSE                     FALSE           FALSE
+[16,]           FALSE                             FALSE            FALSE       FALSE          FALSE                     FALSE           FALSE
+[17,]            TRUE                             FALSE            FALSE       FALSE          FALSE                     FALSE           FALSE
+[18,]            TRUE                              TRUE             TRUE        TRUE           TRUE                     FALSE            TRUE
+[19,]            TRUE                             FALSE            FALSE       FALSE          FALSE                     FALSE           FALSE
+[20,]           FALSE                             FALSE            FALSE       FALSE          FALSE                     FALSE           FALSE
+[21,]            TRUE                             FALSE            FALSE       FALSE          FALSE                     FALSE           FALSE
+[22,]           FALSE                             FALSE            FALSE       FALSE          FALSE                     FALSE           FALSE
+[23,]           FALSE                             FALSE            FALSE       FALSE          FALSE                     FALSE           FALSE
+      Maths.education.science.score Child.conflict Foreign.aid Recycling Peace.index Maternity.leave Advertising Police Social.expenditure Women.s_status
+ [1,]                         FALSE           TRUE       FALSE     FALSE       FALSE           FALSE       FALSE  FALSE              FALSE          FALSE
+ [2,]                         FALSE          FALSE       FALSE      TRUE       FALSE           FALSE       FALSE  FALSE              FALSE          FALSE
+ [3,]                         FALSE          FALSE       FALSE      TRUE       FALSE           FALSE       FALSE  FALSE              FALSE          FALSE
+ [4,]                         FALSE          FALSE       FALSE      TRUE       FALSE           FALSE       FALSE  FALSE              FALSE          FALSE
+ [5,]                         FALSE          FALSE       FALSE      TRUE       FALSE           FALSE       FALSE  FALSE              FALSE          FALSE
+ [6,]                         FALSE          FALSE       FALSE      TRUE       FALSE           FALSE       FALSE  FALSE              FALSE          FALSE
+ [7,]                         FALSE          FALSE       FALSE     FALSE       FALSE           FALSE       FALSE   TRUE              FALSE          FALSE
+ [8,]                         FALSE          FALSE       FALSE     FALSE       FALSE           FALSE       FALSE  FALSE              FALSE          FALSE
+ [9,]                         FALSE          FALSE       FALSE      TRUE       FALSE           FALSE       FALSE   TRUE              FALSE          FALSE
+[10,]                         FALSE          FALSE       FALSE      TRUE       FALSE           FALSE       FALSE   TRUE              FALSE          FALSE
+[11,]                         FALSE          FALSE        TRUE      TRUE       FALSE            TRUE       FALSE   TRUE               TRUE          FALSE
+[12,]                         FALSE          FALSE       FALSE     FALSE       FALSE           FALSE       FALSE  FALSE              FALSE          FALSE
+[13,]                         FALSE           TRUE       FALSE     FALSE       FALSE           FALSE       FALSE  FALSE              FALSE          FALSE
+[14,]                         FALSE          FALSE       FALSE      TRUE       FALSE           FALSE       FALSE  FALSE              FALSE          FALSE
+[15,]                         FALSE           TRUE       FALSE      TRUE       FALSE           FALSE       FALSE  FALSE              FALSE          FALSE
+[16,]                         FALSE          FALSE       FALSE      TRUE       FALSE           FALSE       FALSE   TRUE              FALSE          FALSE
+[17,]                         FALSE          FALSE       FALSE     FALSE       FALSE           FALSE       FALSE  FALSE              FALSE          FALSE
+[18,]                          TRUE           TRUE        TRUE      TRUE       FALSE            TRUE       FALSE   TRUE               TRUE          FALSE
+[19,]                         FALSE          FALSE       FALSE     FALSE       FALSE           FALSE       FALSE   TRUE              FALSE          FALSE
+[20,]                         FALSE          FALSE       FALSE     FALSE       FALSE           FALSE       FALSE  FALSE              FALSE          FALSE
+[21,]                         FALSE          FALSE       FALSE     FALSE       FALSE           FALSE       FALSE  FALSE              FALSE          FALSE
+[22,]                          TRUE          FALSE       FALSE     FALSE       FALSE           FALSE       FALSE  FALSE              FALSE          FALSE
+[23,]                         FALSE          FALSE       FALSE     FALSE       FALSE           FALSE       FALSE  FALSE              FALSE          FALSE
+      Lone.parents
+ [1,]        FALSE
+ [2,]        FALSE
+ [3,]        FALSE
+ [4,]        FALSE
+ [5,]        FALSE
+ [6,]        FALSE
+ [7,]        FALSE
+ [8,]        FALSE
+ [9,]        FALSE
+[10,]        FALSE
+[11,]        FALSE
+[12,]        FALSE
+[13,]        FALSE
+[14,]        FALSE
+[15,]        FALSE
+[16,]        FALSE
+[17,]        FALSE
+[18,]         TRUE
+[19,]        FALSE
+[20,]        FALSE
+[21,]         TRUE
+[22,]        FALSE
+[23,]        FALSE
+R > apply(variables.with.NA,2,which)
+$Country
+integer(0)
+
+$Income.inequality
+integer(0)
+
+$Trust
+integer(0)
+
+$Life.expectancy
+integer(0)
+
+$Infant.mortality
+integer(0)
+
+$Obesity
+[1] 11 18
+
+$Mental.illness
+ [1]  2  5  6  9 10 11 16 17 18 20 21
+
+$Maths.and.literacy.scores
+[1] 18 22
+
+$Teenage.births
+[1] 11 18
+
+$Homicides
+integer(0)
+
+$Imprisonment..log.
+integer(0)
+
+$Social.mobility
+ [1]  1  2  3  7  9 10 11 12 13 14 15 17 18 19 21
+
+$Index.of.health...social_problems
+[1] 11 18
+
+$Child.overweight
+[1]  1 13 15 18
+
+$Drugs.index
+[1] 18
+
+$Calorie.intake
+[1] 11 18
+
+$Public.health.expenditure
+integer(0)
+
+$Child.wellbeing
+[1] 18
+
+$Maths.education.science.score
+[1] 18 22
+
+$Child.conflict
+[1]  1 13 15 18
+
+$Foreign.aid
+[1] 11 18
+
+$Recycling
+ [1]  2  3  4  5  6  9 10 11 14 15 16 18
+
+$Peace.index
+integer(0)
+
+$Maternity.leave
+[1] 11 18
+
+$Advertising
+integer(0)
+
+$Police
+[1]  7  9 10 11 16 18 19
+
+$Social.expenditure
+[1] 11 18
+
+$Women.s_status
+integer(0)
+
+$Lone.parents
+[1] 18 21
+
+R > ifelse(variables.with.NA,country,F)
+      Country Income.inequality Trust   Life.expectancy Infant.mortality Obesity     Mental.illness Maths.and.literacy.scores Teenage.births Homicides
+ [1,] "FALSE" "FALSE"           "FALSE" "FALSE"         "FALSE"          "FALSE"     "FALSE"        "FALSE"                   "FALSE"        "FALSE"  
+ [2,] "FALSE" "FALSE"           "FALSE" "FALSE"         "FALSE"          "FALSE"     "Austria"      "FALSE"                   "FALSE"        "FALSE"  
+ [3,] "FALSE" "FALSE"           "FALSE" "FALSE"         "FALSE"          "FALSE"     "FALSE"        "FALSE"                   "FALSE"        "FALSE"  
+ [4,] "FALSE" "FALSE"           "FALSE" "FALSE"         "FALSE"          "FALSE"     "FALSE"        "FALSE"                   "FALSE"        "FALSE"  
+ [5,] "FALSE" "FALSE"           "FALSE" "FALSE"         "FALSE"          "FALSE"     "Denmark"      "FALSE"                   "FALSE"        "FALSE"  
+ [6,] "FALSE" "FALSE"           "FALSE" "FALSE"         "FALSE"          "FALSE"     "Finland"      "FALSE"                   "FALSE"        "FALSE"  
+ [7,] "FALSE" "FALSE"           "FALSE" "FALSE"         "FALSE"          "FALSE"     "FALSE"        "FALSE"                   "FALSE"        "FALSE"  
+ [8,] "FALSE" "FALSE"           "FALSE" "FALSE"         "FALSE"          "FALSE"     "FALSE"        "FALSE"                   "FALSE"        "FALSE"  
+ [9,] "FALSE" "FALSE"           "FALSE" "FALSE"         "FALSE"          "FALSE"     "Greece"       "FALSE"                   "FALSE"        "FALSE"  
+[10,] "FALSE" "FALSE"           "FALSE" "FALSE"         "FALSE"          "FALSE"     "Ireland"      "FALSE"                   "FALSE"        "FALSE"  
+[11,] "FALSE" "FALSE"           "FALSE" "FALSE"         "FALSE"          "Israel"    "Israel"       "FALSE"                   "Israel"       "FALSE"  
+[12,] "FALSE" "FALSE"           "FALSE" "FALSE"         "FALSE"          "FALSE"     "FALSE"        "FALSE"                   "FALSE"        "FALSE"  
+[13,] "FALSE" "FALSE"           "FALSE" "FALSE"         "FALSE"          "FALSE"     "FALSE"        "FALSE"                   "FALSE"        "FALSE"  
+[14,] "FALSE" "FALSE"           "FALSE" "FALSE"         "FALSE"          "FALSE"     "FALSE"        "FALSE"                   "FALSE"        "FALSE"  
+[15,] "FALSE" "FALSE"           "FALSE" "FALSE"         "FALSE"          "FALSE"     "FALSE"        "FALSE"                   "FALSE"        "FALSE"  
+[16,] "FALSE" "FALSE"           "FALSE" "FALSE"         "FALSE"          "FALSE"     "Norway"       "FALSE"                   "FALSE"        "FALSE"  
+[17,] "FALSE" "FALSE"           "FALSE" "FALSE"         "FALSE"          "FALSE"     "Portugal"     "FALSE"                   "FALSE"        "FALSE"  
+[18,] "FALSE" "FALSE"           "FALSE" "FALSE"         "FALSE"          "Singapore" "Singapore"    "Singapore"               "Singapore"    "FALSE"  
+[19,] "FALSE" "FALSE"           "FALSE" "FALSE"         "FALSE"          "FALSE"     "FALSE"        "FALSE"                   "FALSE"        "FALSE"  
+[20,] "FALSE" "FALSE"           "FALSE" "FALSE"         "FALSE"          "FALSE"     "Sweden"       "FALSE"                   "FALSE"        "FALSE"  
+[21,] "FALSE" "FALSE"           "FALSE" "FALSE"         "FALSE"          "FALSE"     "Switzerland"  "FALSE"                   "FALSE"        "FALSE"  
+[22,] "FALSE" "FALSE"           "FALSE" "FALSE"         "FALSE"          "FALSE"     "FALSE"        "UK"                      "FALSE"        "FALSE"  
+[23,] "FALSE" "FALSE"           "FALSE" "FALSE"         "FALSE"          "FALSE"     "FALSE"        "FALSE"                   "FALSE"        "FALSE"  
+      Imprisonment..log. Social.mobility Index.of.health...social_problems Child.overweight Drugs.index Calorie.intake Public.health.expenditure Child.wellbeing
+ [1,] "FALSE"            "Australia"     "FALSE"                           "Australia"      "FALSE"     "FALSE"        "FALSE"                   "FALSE"        
+ [2,] "FALSE"            "Austria"       "FALSE"                           "FALSE"          "FALSE"     "FALSE"        "FALSE"                   "FALSE"        
+ [3,] "FALSE"            "Belgium"       "FALSE"                           "FALSE"          "FALSE"     "FALSE"        "FALSE"                   "FALSE"        
+ [4,] "FALSE"            "FALSE"         "FALSE"                           "FALSE"          "FALSE"     "FALSE"        "FALSE"                   "FALSE"        
+ [5,] "FALSE"            "FALSE"         "FALSE"                           "FALSE"          "FALSE"     "FALSE"        "FALSE"                   "FALSE"        
+ [6,] "FALSE"            "FALSE"         "FALSE"                           "FALSE"          "FALSE"     "FALSE"        "FALSE"                   "FALSE"        
+ [7,] "FALSE"            "France"        "FALSE"                           "FALSE"          "FALSE"     "FALSE"        "FALSE"                   "FALSE"        
+ [8,] "FALSE"            "FALSE"         "FALSE"                           "FALSE"          "FALSE"     "FALSE"        "FALSE"                   "FALSE"        
+ [9,] "FALSE"            "Greece"        "FALSE"                           "FALSE"          "FALSE"     "FALSE"        "FALSE"                   "FALSE"        
+[10,] "FALSE"            "Ireland"       "FALSE"                           "FALSE"          "FALSE"     "FALSE"        "FALSE"                   "FALSE"        
+[11,] "FALSE"            "Israel"        "Israel"                          "FALSE"          "FALSE"     "Israel"       "FALSE"                   "FALSE"        
+[12,] "FALSE"            "Italy"         "FALSE"                           "FALSE"          "FALSE"     "FALSE"        "FALSE"                   "FALSE"        
+[13,] "FALSE"            "Japan"         "FALSE"                           "Japan"          "FALSE"     "FALSE"        "FALSE"                   "FALSE"        
+[14,] "FALSE"            "Netherlands"   "FALSE"                           "FALSE"          "FALSE"     "FALSE"        "FALSE"                   "FALSE"        
+[15,] "FALSE"            "New Zealand"   "FALSE"                           "New Zealand"    "FALSE"     "FALSE"        "FALSE"                   "FALSE"        
+[16,] "FALSE"            "FALSE"         "FALSE"                           "FALSE"          "FALSE"     "FALSE"        "FALSE"                   "FALSE"        
+[17,] "FALSE"            "Portugal"      "FALSE"                           "FALSE"          "FALSE"     "FALSE"        "FALSE"                   "FALSE"        
+[18,] "FALSE"            "Singapore"     "Singapore"                       "Singapore"      "Singapore" "Singapore"    "FALSE"                   "Singapore"    
+[19,] "FALSE"            "Spain"         "FALSE"                           "FALSE"          "FALSE"     "FALSE"        "FALSE"                   "FALSE"        
+[20,] "FALSE"            "FALSE"         "FALSE"                           "FALSE"          "FALSE"     "FALSE"        "FALSE"                   "FALSE"        
+[21,] "FALSE"            "Switzerland"   "FALSE"                           "FALSE"          "FALSE"     "FALSE"        "FALSE"                   "FALSE"        
+[22,] "FALSE"            "FALSE"         "FALSE"                           "FALSE"          "FALSE"     "FALSE"        "FALSE"                   "FALSE"        
+[23,] "FALSE"            "FALSE"         "FALSE"                           "FALSE"          "FALSE"     "FALSE"        "FALSE"                   "FALSE"        
+      Maths.education.science.score Child.conflict Foreign.aid Recycling     Peace.index Maternity.leave Advertising Police      Social.expenditure Women.s_status
+ [1,] "FALSE"                       "Australia"    "FALSE"     "FALSE"       "FALSE"     "FALSE"         "FALSE"     "FALSE"     "FALSE"            "FALSE"       
+ [2,] "FALSE"                       "FALSE"        "FALSE"     "Austria"     "FALSE"     "FALSE"         "FALSE"     "FALSE"     "FALSE"            "FALSE"       
+ [3,] "FALSE"                       "FALSE"        "FALSE"     "Belgium"     "FALSE"     "FALSE"         "FALSE"     "FALSE"     "FALSE"            "FALSE"       
+ [4,] "FALSE"                       "FALSE"        "FALSE"     "Canada"      "FALSE"     "FALSE"         "FALSE"     "FALSE"     "FALSE"            "FALSE"       
+ [5,] "FALSE"                       "FALSE"        "FALSE"     "Denmark"     "FALSE"     "FALSE"         "FALSE"     "FALSE"     "FALSE"            "FALSE"       
+ [6,] "FALSE"                       "FALSE"        "FALSE"     "Finland"     "FALSE"     "FALSE"         "FALSE"     "FALSE"     "FALSE"            "FALSE"       
+ [7,] "FALSE"                       "FALSE"        "FALSE"     "FALSE"       "FALSE"     "FALSE"         "FALSE"     "France"    "FALSE"            "FALSE"       
+ [8,] "FALSE"                       "FALSE"        "FALSE"     "FALSE"       "FALSE"     "FALSE"         "FALSE"     "FALSE"     "FALSE"            "FALSE"       
+ [9,] "FALSE"                       "FALSE"        "FALSE"     "Greece"      "FALSE"     "FALSE"         "FALSE"     "Greece"    "FALSE"            "FALSE"       
+[10,] "FALSE"                       "FALSE"        "FALSE"     "Ireland"     "FALSE"     "FALSE"         "FALSE"     "Ireland"   "FALSE"            "FALSE"       
+[11,] "FALSE"                       "FALSE"        "Israel"    "Israel"      "FALSE"     "Israel"        "FALSE"     "Israel"    "Israel"           "FALSE"       
+[12,] "FALSE"                       "FALSE"        "FALSE"     "FALSE"       "FALSE"     "FALSE"         "FALSE"     "FALSE"     "FALSE"            "FALSE"       
+[13,] "FALSE"                       "Japan"        "FALSE"     "FALSE"       "FALSE"     "FALSE"         "FALSE"     "FALSE"     "FALSE"            "FALSE"       
+[14,] "FALSE"                       "FALSE"        "FALSE"     "Netherlands" "FALSE"     "FALSE"         "FALSE"     "FALSE"     "FALSE"            "FALSE"       
+[15,] "FALSE"                       "New Zealand"  "FALSE"     "New Zealand" "FALSE"     "FALSE"         "FALSE"     "FALSE"     "FALSE"            "FALSE"       
+[16,] "FALSE"                       "FALSE"        "FALSE"     "Norway"      "FALSE"     "FALSE"         "FALSE"     "Norway"    "FALSE"            "FALSE"       
+[17,] "FALSE"                       "FALSE"        "FALSE"     "FALSE"       "FALSE"     "FALSE"         "FALSE"     "FALSE"     "FALSE"            "FALSE"       
+[18,] "Singapore"                   "Singapore"    "Singapore" "Singapore"   "FALSE"     "Singapore"     "FALSE"     "Singapore" "Singapore"        "FALSE"       
+[19,] "FALSE"                       "FALSE"        "FALSE"     "FALSE"       "FALSE"     "FALSE"         "FALSE"     "Spain"     "FALSE"            "FALSE"       
+[20,] "FALSE"                       "FALSE"        "FALSE"     "FALSE"       "FALSE"     "FALSE"         "FALSE"     "FALSE"     "FALSE"            "FALSE"       
+[21,] "FALSE"                       "FALSE"        "FALSE"     "FALSE"       "FALSE"     "FALSE"         "FALSE"     "FALSE"     "FALSE"            "FALSE"       
+[22,] "UK"                          "FALSE"        "FALSE"     "FALSE"       "FALSE"     "FALSE"         "FALSE"     "FALSE"     "FALSE"            "FALSE"       
+[23,] "FALSE"                       "FALSE"        "FALSE"     "FALSE"       "FALSE"     "FALSE"         "FALSE"     "FALSE"     "FALSE"            "FALSE"       
+      Lone.parents 
+ [1,] "FALSE"      
+ [2,] "FALSE"      
+ [3,] "FALSE"      
+ [4,] "FALSE"      
+ [5,] "FALSE"      
+ [6,] "FALSE"      
+ [7,] "FALSE"      
+ [8,] "FALSE"      
+ [9,] "FALSE"      
+[10,] "FALSE"      
+[11,] "FALSE"      
+[12,] "FALSE"      
+[13,] "FALSE"      
+[14,] "FALSE"      
+[15,] "FALSE"      
+[16,] "FALSE"      
+[17,] "FALSE"      
+[18,] "Singapore"  
+[19,] "FALSE"      
+[20,] "FALSE"      
+[21,] "Switzerland"
+[22,] "FALSE"      
+[23,] "FALSE"      
+R > countries.with.NA<-ifelse(variables.with.NA,country,F)
+R > apply(variables.with.NA,2,any)
+                          Country                 Income.inequality                             Trust                   Life.expectancy 
+                            FALSE                             FALSE                             FALSE                             FALSE 
+                 Infant.mortality                           Obesity                    Mental.illness         Maths.and.literacy.scores 
+                            FALSE                              TRUE                              TRUE                              TRUE 
+                   Teenage.births                         Homicides                Imprisonment..log.                   Social.mobility 
+                             TRUE                             FALSE                             FALSE                              TRUE 
+Index.of.health...social_problems                  Child.overweight                       Drugs.index                    Calorie.intake 
+                             TRUE                              TRUE                              TRUE                              TRUE 
+        Public.health.expenditure                   Child.wellbeing     Maths.education.science.score                    Child.conflict 
+                            FALSE                              TRUE                              TRUE                              TRUE 
+                      Foreign.aid                         Recycling                       Peace.index                   Maternity.leave 
+                             TRUE                              TRUE                             FALSE                              TRUE 
+                      Advertising                            Police                Social.expenditure                    Women.s_status 
+                            FALSE                              TRUE                              TRUE                             FALSE 
+                     Lone.parents 
+                             TRUE 
+R > which(apply(variables.with.NA,2,any))
+                          Obesity                    Mental.illness         Maths.and.literacy.scores                    Teenage.births 
+                                6                                 7                                 8                                 9 
+                  Social.mobility Index.of.health...social_problems                  Child.overweight                       Drugs.index 
+                               12                                13                                14                                15 
+                   Calorie.intake                   Child.wellbeing     Maths.education.science.score                    Child.conflict 
+                               16                                18                                19                                20 
+                      Foreign.aid                         Recycling                   Maternity.leave                            Police 
+                               21                                22                                24                                26 
+               Social.expenditure                      Lone.parents 
+                               27                                29 
+R > which(country=="Singapore")
+[1] 18
+R > which(country=="Israel")
+[1] 11
+R > working.data<-international.inequality[-c(11,18),-c(1,2,13)]
+R > str(working.data)
+'data.frame':	21 obs. of  26 variables:
+ $ Trust                        : num  39.9 33.9 30.7 38.8 66.5 58 22.2 34.8 23.7 35.2 ...
+ $ Life.expectancy              : num  79.2 78.5 78.8 79.3 76.6 78 79 78.3 78.3 77 ...
+ $ Infant.mortality             : num  4.9 4.8 5 5.3 5.3 3.7 4.4 4.4 5 5.9 ...
+ $ Obesity                      : num  18.4 14.5 13.5 12.8 15 ...
+ $ Mental.illness               : num  23 NA 12 19.9 NA NA 18.4 9.1 NA NA ...
+ $ Maths.and.literacy.scores    : num  524 498 518 530 503 ...
+ $ Teenage.births               : num  18.4 14 9.9 20.2 8.1 9.2 9.3 13.1 11.8 18.7 ...
+ $ Homicides                    : num  16.9 11.6 13 17.3 12.7 28.2 21.5 13.7 13.9 8.6 ...
+ $ Imprisonment..log.           : num  4.61 4.52 4.28 4.77 4.17 4.11 4.5 4.51 3.33 4.17 ...
+ $ Social.mobility              : num  NA NA NA 0.14 0.14 0.15 NA 0.17 NA NA ...
+ $ Child.overweight             : num  NA 11.9 10.4 19.5 10.3 13.3 11.2 11.3 16 12.1 ...
+ $ Drugs.index                  : num  1.71 -0.02 -0.18 0.61 -0.09 -0.88 -0.35 -0.3 -0.99 -0.03 ...
+ $ Calorie.intake               : num  3142 3753 3632 3167 3405 ...
+ $ Public.health.expenditure    : num  67.9 69.3 71.7 70.8 82.4 75.6 76 74.9 56 76 ...
+ $ Child.wellbeing              : num  -0.21 -0.07 0.05 0.04 0.21 0.34 -0.17 -0.01 -0.04 -0.04 ...
+ $ Maths.education.science.score: num  525 496 515 526 494 ...
+ $ Child.conflict               : num  NA 0.31 0.33 0.24 -0.14 -1.25 0.59 -0.7 0.4 -0.06 ...
+ $ Foreign.aid                  : num  0.25 0.52 0.53 0.34 0.81 0.47 0.47 0.35 0.24 0.41 ...
+ $ Recycling                    : num  7.4 NA NA NA NA NA 6 3.4 NA NA ...
+ $ Peace.index                  : num  1.66 1.48 1.49 1.48 1.38 1.45 1.73 1.52 1.79 1.4 ...
+ $ Maternity.leave              : num  0 16 15 17 18 18 16 14 17 18 ...
+ $ Advertising                  : num  1.24 0.97 0.82 0.77 0.75 0.9 0.71 0.99 1.04 1 ...
+ $ Police                       : num  304 305 357 186 192 160 NA 303 NA NA ...
+ $ Social.expenditure           : num  17.8 27.5 26.5 17.2 27.6 25.8 29 27.3 19.9 15.8 ...
+ $ Women.s_status               : num  0.46 -0.81 0.61 0.56 0.83 1.08 -0.17 -0.21 -0.85 -0.21 ...
+ $ Lone.parents                 : num  21 15 12 17 22 19 12 21 3 14 ...
+R > which(apply(is.na(working.data),2,any))
+               Mental.illness     Maths.and.literacy.scores               Social.mobility              Child.overweight Maths.education.science.score 
+                            5                             6                            10                            11                            16 
+               Child.conflict                     Recycling                        Police                  Lone.parents 
+                           17                            19                            23                            26 
+R > working.data.2<-working.data[,-c(5,6,10,11,16,17,19,23,26)]
+R > str(working.data.2)
+'data.frame':	21 obs. of  17 variables:
+ $ Trust                    : num  39.9 33.9 30.7 38.8 66.5 58 22.2 34.8 23.7 35.2 ...
+ $ Life.expectancy          : num  79.2 78.5 78.8 79.3 76.6 78 79 78.3 78.3 77 ...
+ $ Infant.mortality         : num  4.9 4.8 5 5.3 5.3 3.7 4.4 4.4 5 5.9 ...
+ $ Obesity                  : num  18.4 14.5 13.5 12.8 15 ...
+ $ Teenage.births           : num  18.4 14 9.9 20.2 8.1 9.2 9.3 13.1 11.8 18.7 ...
+ $ Homicides                : num  16.9 11.6 13 17.3 12.7 28.2 21.5 13.7 13.9 8.6 ...
+ $ Imprisonment..log.       : num  4.61 4.52 4.28 4.77 4.17 4.11 4.5 4.51 3.33 4.17 ...
+ $ Drugs.index              : num  1.71 -0.02 -0.18 0.61 -0.09 -0.88 -0.35 -0.3 -0.99 -0.03 ...
+ $ Calorie.intake           : num  3142 3753 3632 3167 3405 ...
+ $ Public.health.expenditure: num  67.9 69.3 71.7 70.8 82.4 75.6 76 74.9 56 76 ...
+ $ Child.wellbeing          : num  -0.21 -0.07 0.05 0.04 0.21 0.34 -0.17 -0.01 -0.04 -0.04 ...
+ $ Foreign.aid              : num  0.25 0.52 0.53 0.34 0.81 0.47 0.47 0.35 0.24 0.41 ...
+ $ Peace.index              : num  1.66 1.48 1.49 1.48 1.38 1.45 1.73 1.52 1.79 1.4 ...
+ $ Maternity.leave          : num  0 16 15 17 18 18 16 14 17 18 ...
+ $ Advertising              : num  1.24 0.97 0.82 0.77 0.75 0.9 0.71 0.99 1.04 1 ...
+ $ Social.expenditure       : num  17.8 27.5 26.5 17.2 27.6 25.8 29 27.3 19.9 15.8 ...
+ $ Women.s_status           : num  0.46 -0.81 0.61 0.56 0.83 1.08 -0.17 -0.21 -0.85 -0.21 ...
+R > inequality.index.2<-inequality.index[-c(11,18)]
+R > country.2<-country[-c(11,18)]
+R > health.social.index.2<-health.social.index[-c(11,18)]
+R > plot(inequality.index.2,working.data.2[,1],xlab="Income Inequality",type="p",pch=20,ylab="Trust",xlim=c(3,9))
+R > text(inequality.index.2,working.data.2[,1],labels=country.2,pos=4,offset=0.3,cex=0.5)
+R > 
+R > princomp(working.data.2)
+Call:
+princomp(x = working.data.2)
+
+Standard deviations:
+      Comp.1       Comp.2       Comp.3       Comp.4       Comp.5       Comp.6       Comp.7       Comp.8       Comp.9      Comp.10      Comp.11      Comp.12 
+252.71939132  19.32545523  13.83397644   8.94564456   7.73048076   5.97413251   3.96382897   2.14842353   0.66560573   0.54726017   0.40040114   0.22593275 
+     Comp.13      Comp.14      Comp.15      Comp.16      Comp.17 
+  0.14255291   0.11933853   0.08923481   0.04592462   0.02047846 
+
+ 17  variables and  21 observations.
+R > summary(princomp(working.data.2))
+Importance of components:
+                            Comp.1       Comp.2       Comp.3      Comp.4       Comp.5       Comp.6       Comp.7       Comp.8       Comp.9      Comp.10      Comp.11
+Standard deviation     252.7193913 19.325455230 13.833976440 8.945644558 7.7304807643 5.9741325058 3.9638289742 2.148424e+00 6.656057e-01 5.472602e-01 4.004011e-01
+Proportion of Variance   0.9882149  0.005778748  0.002961204 0.001238219 0.0009246711 0.0005522351 0.0002431107 7.141905e-05 6.855015e-06 4.634063e-06 2.480647e-06
+Cumulative Proportion    0.9882149  0.993993684  0.996954888 0.998193107 0.9991177785 0.9996700136 0.9999131243 9.999845e-01 9.999914e-01 9.999960e-01 9.999985e-01
+                            Comp.12      Comp.13      Comp.14      Comp.15      Comp.16      Comp.17
+Standard deviation     2.259327e-01 1.425529e-01 1.193385e-01 8.923481e-02 4.592462e-02 2.047846e-02
+Proportion of Variance 7.898282e-07 3.144318e-07 2.203615e-07 1.232091e-07 3.263363e-08 6.488868e-09
+Cumulative Proportion  9.999993e-01 9.999996e-01 9.999998e-01 1.000000e+00 1.000000e+00 1.000000e+00
+R > summary(prcomp(working.data.2))
+Importance of components:
+                            PC1      PC2      PC3     PC4     PC5     PC6     PC7     PC8     PC9   PC10   PC11   PC12   PC13   PC14    PC15    PC16    PC17
+Standard deviation     258.9603 19.80270 14.17561 9.16656 7.92139 6.12166 4.06172 2.20148 0.68204 0.5608 0.4103 0.2315 0.1461 0.1223 0.09144 0.04706 0.02098
+Proportion of Variance   0.9882  0.00578  0.00296 0.00124 0.00092 0.00055 0.00024 0.00007 0.00001 0.0000 0.0000 0.0000 0.0000 0.0000 0.00000 0.00000 0.00000
+Cumulative Proportion    0.9882  0.99399  0.99695 0.99819 0.99912 0.99967 0.99991 0.99998 0.99999 1.0000 1.0000 1.0000 1.0000 1.0000 1.00000 1.00000 1.00000
+R > ?prcomp
+R > summary(prcomp(working.data.2,scale.=TRUE))
+Importance of components:
+                          PC1    PC2    PC3     PC4     PC5     PC6     PC7     PC8     PC9   PC10    PC11    PC12    PC13    PC14    PC15    PC16    PC17
+Standard deviation     2.7617 1.5314 1.4181 1.11579 0.96424 0.88222 0.73249 0.64331 0.58351 0.5344 0.44307 0.37251 0.25482 0.22904 0.16290 0.08307 0.04092
+Proportion of Variance 0.4486 0.1379 0.1183 0.07323 0.05469 0.04578 0.03156 0.02434 0.02003 0.0168 0.01155 0.00816 0.00382 0.00309 0.00156 0.00041 0.00010
+Cumulative Proportion  0.4486 0.5866 0.7049 0.77811 0.83281 0.87859 0.91015 0.93449 0.95452 0.9713 0.98287 0.99103 0.99485 0.99793 0.99950 0.99990 1.00000
+R > working.data.2.scaled<-apply(working.data.2,2,scales)
+다음에 오류가 있습니다match.fun(FUN) : 객체 'scales'를 찾을 수 없습니다
+R > ?scale
+R > working.data.2.scaled<-apply(working.data.2,2,scale)
+R > head(working.data.2.scaled)
+           Trust Life.expectancy Infant.mortality     Obesity Teenage.births   Homicides Imprisonment..log. Drugs.index Calorie.intake Public.health.expenditure
+[1,] -0.04604984      0.57497607       0.06538147  0.44048771     0.29469383 -0.06534348          0.2662862  2.18739696    -1.00394827               -0.39033106
+[2,] -0.43809579     -0.01197867      -0.04023475 -0.13812206    -0.09374711 -0.48817655          0.1133133 -0.05683155     1.35792563               -0.25173525
+[3,] -0.64718696      0.23957336       0.17099769 -0.28841031    -0.45570345 -0.37648480         -0.2946145 -0.26439026     0.89018956               -0.01414243
+[4,] -0.11792493      0.65882675       0.48784635 -0.40112650     0.45360149 -0.03343155          0.5382380  0.76043086    -0.90730859               -0.10323974
+[5,]  1.69202052     -1.60514154       0.48784635 -0.06297793    -0.61461111 -0.40041874         -0.4815814 -0.14763848     0.01270122                1.04512556
+[6,]  1.13662209     -0.43123206      -1.20201317  0.61331920    -0.51750087  0.83616856         -0.5835633 -1.17245960    -0.79134096                0.37194590
+     Child.wellbeing Foreign.aid Peace.index Maternity.leave  Advertising Social.expenditure Women.s_status
+[1,]      -0.5370751 -0.88681083   0.3528480     -1.18243559  1.281540819         -1.0405184      0.5549762
+[2,]      -0.1269450  0.28526782  -0.4458140     -0.16632726  0.008977519          1.1178686     -1.1680990
+[3,]       0.2245950  0.32867814  -0.4014439     -0.22983403 -0.698002092          0.8953545      0.7584890
+[4,]       0.1953000 -0.49611795  -0.4458140     -0.10282049 -0.933661963         -1.1740269      0.6906514
+[5,]       0.6933151  1.54416712  -0.8895151     -0.03931372 -1.027925911          1.1401200      1.0569745
+[6,]       1.0741501  0.06821622  -0.5789243     -0.03931372 -0.320946300          0.7395946      1.3961626
+R > summary(prcomp(working.data.2))
+Importance of components:
+                            PC1      PC2      PC3     PC4     PC5     PC6     PC7     PC8     PC9   PC10   PC11   PC12   PC13   PC14    PC15    PC16    PC17
+Standard deviation     258.9603 19.80270 14.17561 9.16656 7.92139 6.12166 4.06172 2.20148 0.68204 0.5608 0.4103 0.2315 0.1461 0.1223 0.09144 0.04706 0.02098
+Proportion of Variance   0.9882  0.00578  0.00296 0.00124 0.00092 0.00055 0.00024 0.00007 0.00001 0.0000 0.0000 0.0000 0.0000 0.0000 0.00000 0.00000 0.00000
+Cumulative Proportion    0.9882  0.99399  0.99695 0.99819 0.99912 0.99967 0.99991 0.99998 0.99999 1.0000 1.0000 1.0000 1.0000 1.0000 1.00000 1.00000 1.00000
+R > summary(prcomp(working.data.2.scaled))
+Importance of components:
+                          PC1    PC2    PC3     PC4     PC5     PC6     PC7     PC8     PC9   PC10    PC11    PC12    PC13    PC14    PC15    PC16    PC17
+Standard deviation     2.7617 1.5314 1.4181 1.11579 0.96424 0.88222 0.73249 0.64331 0.58351 0.5344 0.44307 0.37251 0.25482 0.22904 0.16290 0.08307 0.04092
+Proportion of Variance 0.4486 0.1379 0.1183 0.07323 0.05469 0.04578 0.03156 0.02434 0.02003 0.0168 0.01155 0.00816 0.00382 0.00309 0.00156 0.00041 0.00010
+Cumulative Proportion  0.4486 0.5866 0.7049 0.77811 0.83281 0.87859 0.91015 0.93449 0.95452 0.9713 0.98287 0.99103 0.99485 0.99793 0.99950 0.99990 1.00000
+R > summary(prcomp(working.data.2,scale.=TRUE))
+Importance of components:
+                          PC1    PC2    PC3     PC4     PC5     PC6     PC7     PC8     PC9   PC10    PC11    PC12    PC13    PC14    PC15    PC16    PC17
+Standard deviation     2.7617 1.5314 1.4181 1.11579 0.96424 0.88222 0.73249 0.64331 0.58351 0.5344 0.44307 0.37251 0.25482 0.22904 0.16290 0.08307 0.04092
+Proportion of Variance 0.4486 0.1379 0.1183 0.07323 0.05469 0.04578 0.03156 0.02434 0.02003 0.0168 0.01155 0.00816 0.00382 0.00309 0.00156 0.00041 0.00010
+Cumulative Proportion  0.4486 0.5866 0.7049 0.77811 0.83281 0.87859 0.91015 0.93449 0.95452 0.9713 0.98287 0.99103 0.99485 0.99793 0.99950 0.99990 1.00000
+R > ?princomp
+R > summary(princomp(working.data.2.scaled))
+Importance of components:
+                          Comp.1    Comp.2    Comp.3     Comp.4     Comp.5     Comp.6     Comp.7     Comp.8     Comp.9   Comp.10    Comp.11     Comp.12     Comp.13
+Standard deviation     2.6951101 1.4944839 1.3839247 1.08889632 0.94100321 0.86095674 0.71483311 0.62780575 0.56944985 0.5214819 0.43238934 0.363530657 0.248676683
+Proportion of Variance 0.4486353 0.1379504 0.1182947 0.07323411 0.05469185 0.04578287 0.03156092 0.02434395 0.02002863 0.0167965 0.01154756 0.008162486 0.003819535
+Cumulative Proportion  0.4486353 0.5865856 0.7048803 0.77811444 0.83280629 0.87858916 0.91015008 0.93449403 0.95452266 0.9713192 0.98286673 0.991029215 0.994848750
+                           Comp.14     Comp.15      Comp.16      Comp.17
+Standard deviation     0.223520564 0.158975658 0.0810645581 3.993771e-02
+Proportion of Variance 0.003085854 0.001560995 0.0004058845 9.851598e-05
+Cumulative Proportion  0.997934604 0.999495600 0.9999014840 1.000000e+00
+R > factanal(working.data.2.scaled)
+다음에 오류가 있습니다factanal(working.data.2.scaled) : 
+  기본값이 없는 인수 "factors"가 누락되어 있습니다
+R > factanal(working.data.2.scaled,factors=7)
+
+Call:
+factanal(x = working.data.2.scaled, factors = 7)
+
+Uniquenesses:
+                    Trust           Life.expectancy          Infant.mortality                   Obesity            Teenage.births                 Homicides 
+                    0.208                     0.137                     0.052                     0.005                     0.037                     0.246 
+       Imprisonment..log.               Drugs.index            Calorie.intake Public.health.expenditure           Child.wellbeing               Foreign.aid 
+                    0.005                     0.431                     0.199                     0.266                     0.005                     0.005 
+              Peace.index           Maternity.leave               Advertising        Social.expenditure            Women.s_status 
+                    0.005                     0.349                     0.357                     0.005                     0.174 
+
+Loadings:
+                          Factor1 Factor2 Factor3 Factor4 Factor5 Factor6 Factor7
+Trust                     -0.106   0.841  -0.209  -0.134          -0.103         
+Life.expectancy           -0.191          -0.891                  -0.145         
+Infant.mortality           0.600  -0.251   0.637   0.115  -0.304   0.105         
+Obesity                    0.219           0.480   0.392           0.743         
+Teenage.births             0.803           0.252   0.277  -0.202   0.369         
+Homicides                  0.414           0.269   0.657           0.137   0.232 
+Imprisonment..log.         0.849           0.165   0.432                   0.219 
+Drugs.index                0.692  -0.101           0.160  -0.219                 
+Calorie.intake                    -0.293   0.771   0.266   0.198                 
+Public.health.expenditure          0.322  -0.238  -0.636   0.386          -0.119 
+Child.wellbeing           -0.714   0.445                          -0.416   0.320 
+Foreign.aid               -0.253   0.841          -0.113   0.268  -0.220  -0.292 
+Peace.index                0.317  -0.217           0.855           0.233  -0.243 
+Maternity.leave           -0.316   0.644  -0.191  -0.108   0.266          -0.114 
+Advertising                0.581  -0.185   0.173   0.118  -0.300   0.371         
+Social.expenditure        -0.359   0.233   0.106           0.888                 
+Women.s_status                     0.850          -0.120           0.135   0.240 
+
+               Factor1 Factor2 Factor3 Factor4 Factor5 Factor6 Factor7
+SS loadings      3.720   3.158   2.385   2.178   1.416   1.205   0.453
+Proportion Var   0.219   0.186   0.140   0.128   0.083   0.071   0.027
+Cumulative Var   0.219   0.405   0.545   0.673   0.756   0.827   0.854
+
+Test of the hypothesis that 7 factors are sufficient.
+The chi square statistic is 57.19 on 38 degrees of freedom.
+The p-value is 0.0235 
+R > factanal(working.data.2.scaled,factors=8)
+
+Call:
+factanal(x = working.data.2.scaled, factors = 8)
+
+Uniquenesses:
+                    Trust           Life.expectancy          Infant.mortality                   Obesity            Teenage.births                 Homicides 
+                    0.196                     0.134                     0.054                     0.005                     0.005                     0.144 
+       Imprisonment..log.               Drugs.index            Calorie.intake Public.health.expenditure           Child.wellbeing               Foreign.aid 
+                    0.005                     0.227                     0.168                     0.265                     0.005                     0.005 
+              Peace.index           Maternity.leave               Advertising        Social.expenditure            Women.s_status 
+                    0.005                     0.247                     0.343                     0.005                     0.162 
+
+Loadings:
+                          Factor1 Factor2 Factor3 Factor4 Factor5 Factor6 Factor7 Factor8
+Trust                      0.838  -0.221  -0.175                          -0.106         
+Life.expectancy                   -0.897          -0.127  -0.159                  -0.125 
+Infant.mortality          -0.221   0.660   0.379   0.256   0.368  -0.335                 
+Obesity                            0.548   0.383   0.220                   0.398   0.575 
+Teenage.births                     0.309   0.633   0.556   0.245  -0.295   0.168   0.123 
+Homicides                          0.285           0.788                   0.350   0.127 
+Imprisonment..log.                 0.168   0.269   0.761   0.539           0.126         
+Drugs.index                                0.292   0.181   0.768  -0.214   0.105         
+Calorie.intake            -0.315   0.784           0.182           0.179   0.208         
+Public.health.expenditure  0.357  -0.239   0.183  -0.345  -0.112   0.419  -0.451         
+Child.wellbeing            0.364          -0.877          -0.262                         
+Foreign.aid                0.830          -0.187  -0.213  -0.168   0.306          -0.314 
+Peace.index               -0.218           0.222   0.405   0.160           0.831         
+Maternity.leave            0.622  -0.192  -0.127          -0.470   0.249          -0.164 
+Advertising               -0.135   0.216   0.506   0.197   0.353  -0.325   0.114   0.232 
+Social.expenditure         0.205          -0.254          -0.234   0.906                 
+Women.s_status             0.853                                          -0.183   0.232 
+
+               Factor1 Factor2 Factor3 Factor4 Factor5 Factor6 Factor7 Factor8
+SS loadings      3.034   2.581   2.117   2.103   1.645   1.569   1.347   0.631
+Proportion Var   0.178   0.152   0.125   0.124   0.097   0.092   0.079   0.037
+Cumulative Var   0.178   0.330   0.455   0.579   0.675   0.768   0.847   0.884
+
+Test of the hypothesis that 8 factors are sufficient.
+The chi square statistic is 40.26 on 28 degrees of freedom.
+The p-value is 0.0627 
+R > factanal(working.data.2.scaled,factors=8,rotation="varimax")
+
+Call:
+factanal(x = working.data.2.scaled, factors = 8, rotation = "varimax")
+
+Uniquenesses:
+                    Trust           Life.expectancy          Infant.mortality                   Obesity            Teenage.births                 Homicides 
+                    0.196                     0.134                     0.054                     0.005                     0.005                     0.144 
+       Imprisonment..log.               Drugs.index            Calorie.intake Public.health.expenditure           Child.wellbeing               Foreign.aid 
+                    0.005                     0.227                     0.168                     0.265                     0.005                     0.005 
+              Peace.index           Maternity.leave               Advertising        Social.expenditure            Women.s_status 
+                    0.005                     0.247                     0.343                     0.005                     0.162 
+
+Loadings:
+                          Factor1 Factor2 Factor3 Factor4 Factor5 Factor6 Factor7 Factor8
+Trust                      0.838  -0.221  -0.175                          -0.106         
+Life.expectancy                   -0.897          -0.127  -0.159                  -0.125 
+Infant.mortality          -0.221   0.660   0.379   0.256   0.368  -0.335                 
+Obesity                            0.548   0.383   0.220                   0.398   0.575 
+Teenage.births                     0.309   0.633   0.556   0.245  -0.295   0.168   0.123 
+Homicides                          0.285           0.788                   0.350   0.127 
+Imprisonment..log.                 0.168   0.269   0.761   0.539           0.126         
+Drugs.index                                0.292   0.181   0.768  -0.214   0.105         
+Calorie.intake            -0.315   0.784           0.182           0.179   0.208         
+Public.health.expenditure  0.357  -0.239   0.183  -0.345  -0.112   0.419  -0.451         
+Child.wellbeing            0.364          -0.877          -0.262                         
+Foreign.aid                0.830          -0.187  -0.213  -0.168   0.306          -0.314 
+Peace.index               -0.218           0.222   0.405   0.160           0.831         
+Maternity.leave            0.622  -0.192  -0.127          -0.470   0.249          -0.164 
+Advertising               -0.135   0.216   0.506   0.197   0.353  -0.325   0.114   0.232 
+Social.expenditure         0.205          -0.254          -0.234   0.906                 
+Women.s_status             0.853                                          -0.183   0.232 
+
+               Factor1 Factor2 Factor3 Factor4 Factor5 Factor6 Factor7 Factor8
+SS loadings      3.034   2.581   2.117   2.103   1.645   1.569   1.347   0.631
+Proportion Var   0.178   0.152   0.125   0.124   0.097   0.092   0.079   0.037
+Cumulative Var   0.178   0.330   0.455   0.579   0.675   0.768   0.847   0.884
+
+Test of the hypothesis that 8 factors are sufficient.
+The chi square statistic is 40.26 on 28 degrees of freedom.
+The p-value is 0.0627 
+R > ?factanal
+R > factanal(working.data.2.scaled,factors=8,rotation="none")
+
+Call:
+factanal(x = working.data.2.scaled, factors = 8, rotation = "none")
+
+Uniquenesses:
+                    Trust           Life.expectancy          Infant.mortality                   Obesity            Teenage.births                 Homicides 
+                    0.196                     0.134                     0.054                     0.005                     0.005                     0.144 
+       Imprisonment..log.               Drugs.index            Calorie.intake Public.health.expenditure           Child.wellbeing               Foreign.aid 
+                    0.005                     0.227                     0.168                     0.265                     0.005                     0.005 
+              Peace.index           Maternity.leave               Advertising        Social.expenditure            Women.s_status 
+                    0.005                     0.247                     0.343                     0.005                     0.162 
+
+Loadings:
+                          Factor1 Factor2 Factor3 Factor4 Factor5 Factor6 Factor7 Factor8
+Trust                     -0.484   0.258   0.315   0.358   0.146   0.462           0.187 
+Life.expectancy           -0.365  -0.358   0.533   0.119  -0.252  -0.145  -0.470         
+Infant.mortality           0.773          -0.488   0.102   0.180   0.122   0.227         
+Obesity                    0.712   0.391          -0.480   0.216   0.162   0.171         
+Teenage.births             0.924   0.170           0.203   0.203   0.118                 
+Homicides                  0.650   0.455   0.101          -0.295           0.229  -0.273 
+Imprisonment..log.         0.770   0.261           0.491  -0.190  -0.130   0.190         
+Drugs.index                0.619          -0.158   0.378                           0.465 
+Calorie.intake             0.328   0.394  -0.574  -0.300          -0.145   0.255  -0.253 
+Public.health.expenditure -0.546           0.185   0.203   0.529  -0.232  -0.142         
+Child.wellbeing           -0.790   0.220                  -0.379   0.295   0.298         
+Foreign.aid               -0.645   0.559           0.271   0.207   0.311  -0.227         
+Peace.index                0.742   0.349          -0.187  -0.429          -0.321         
+Maternity.leave           -0.595   0.370   0.300   0.135   0.144   0.182  -0.183  -0.259 
+Advertising                0.756                           0.197                   0.164 
+Social.expenditure        -0.596   0.617                          -0.493                 
+Women.s_status            -0.289   0.409   0.433   0.313   0.288   0.379   0.155   0.228 
+
+               Factor1 Factor2 Factor3 Factor4 Factor5 Factor6 Factor7 Factor8
+SS loadings      7.085   1.987   1.303   1.178   1.126   0.996   0.791   0.560
+Proportion Var   0.417   0.117   0.077   0.069   0.066   0.059   0.047   0.033
+Cumulative Var   0.417   0.534   0.610   0.680   0.746   0.804   0.851   0.884
+
+Test of the hypothesis that 8 factors are sufficient.
+The chi square statistic is 40.26 on 28 degrees of freedom.
+The p-value is 0.0627 
+R > factanal(working.data.2.scaled,factors=6,rotation="none")
+
+Call:
+factanal(x = working.data.2.scaled, factors = 6, rotation = "none")
+
+Uniquenesses:
+                    Trust           Life.expectancy          Infant.mortality                   Obesity            Teenage.births                 Homicides 
+                    0.238                     0.159                     0.037                     0.190                     0.005                     0.167 
+       Imprisonment..log.               Drugs.index            Calorie.intake Public.health.expenditure           Child.wellbeing               Foreign.aid 
+                    0.005                     0.326                     0.225                     0.258                     0.005                     0.225 
+              Peace.index           Maternity.leave               Advertising        Social.expenditure            Women.s_status 
+                    0.343                     0.303                     0.392                     0.005                     0.256 
+
+Loadings:
+                          Factor1 Factor2 Factor3 Factor4 Factor5 Factor6
+Trust                     -0.369   0.613           0.134   0.376   0.296 
+Life.expectancy           -0.333   0.524  -0.290  -0.541  -0.251  -0.125 
+Infant.mortality           0.795  -0.451           0.261   0.227         
+Obesity                    0.565  -0.139   0.164   0.607  -0.262         
+Teenage.births             0.951           0.159   0.235                 
+Homicides                  0.570           0.466   0.208  -0.381   0.318 
+Imprisonment..log.         0.814           0.466  -0.201           0.273 
+Drugs.index                0.687                  -0.284   0.315   0.125 
+Calorie.intake             0.216  -0.643   0.374   0.395  -0.130         
+Public.health.expenditure -0.427   0.391                   0.449  -0.438 
+Child.wellbeing           -0.821           0.108                   0.548 
+Foreign.aid               -0.556   0.374   0.305   0.275   0.385         
+Peace.index                0.598           0.194          -0.499         
+Maternity.leave           -0.543   0.545   0.199   0.235                 
+Advertising                0.762                   0.106                 
+Social.expenditure        -0.645           0.706                  -0.282 
+Women.s_status            -0.194   0.609   0.257   0.270   0.360   0.259 
+
+               Factor1 Factor2 Factor3 Factor4 Factor5 Factor6
+SS loadings      6.461   2.273   1.481   1.353   1.325   0.968
+Proportion Var   0.380   0.134   0.087   0.080   0.078   0.057
+Cumulative Var   0.380   0.514   0.601   0.680   0.758   0.815
+
+Test of the hypothesis that 6 factors are sufficient.
+The chi square statistic is 72.01 on 49 degrees of freedom.
+The p-value is 0.0178 
+R > factanal(working.data.2.scaled,factors=7,rotation="none")
+
+Call:
+factanal(x = working.data.2.scaled, factors = 7, rotation = "none")
+
+Uniquenesses:
+                    Trust           Life.expectancy          Infant.mortality                   Obesity            Teenage.births                 Homicides 
+                    0.208                     0.137                     0.052                     0.005                     0.037                     0.246 
+       Imprisonment..log.               Drugs.index            Calorie.intake Public.health.expenditure           Child.wellbeing               Foreign.aid 
+                    0.005                     0.431                     0.199                     0.266                     0.005                     0.005 
+              Peace.index           Maternity.leave               Advertising        Social.expenditure            Women.s_status 
+                    0.005                     0.349                     0.357                     0.005                     0.174 
+
+Loadings:
+                          Factor1 Factor2 Factor3 Factor4 Factor5 Factor6 Factor7
+Trust                     -0.538   0.185   0.465   0.355   0.227           0.272 
+Life.expectancy           -0.330  -0.364  -0.237   0.503   0.179  -0.530         
+Infant.mortality           0.749           0.275  -0.466           0.297         
+Obesity                    0.693   0.441   0.168          -0.498   0.205         
+Teenage.births             0.877   0.184   0.335           0.157   0.135         
+Homicides                  0.618   0.487  -0.178           0.156   0.211   0.178 
+Imprisonment..log.         0.734   0.277                   0.573   0.224         
+Drugs.index                0.611           0.176           0.396                 
+Calorie.intake             0.320   0.431  -0.155  -0.604  -0.237   0.239  -0.104 
+Public.health.expenditure -0.574           0.305   0.205                  -0.504 
+Child.wellbeing           -0.790   0.187  -0.228                   0.248   0.472 
+Foreign.aid               -0.708   0.486   0.438           0.164  -0.157   0.117 
+Peace.index                0.755   0.425  -0.231                  -0.348   0.262 
+Maternity.leave           -0.643   0.308   0.224   0.243          -0.165         
+Advertising                0.745           0.266                   0.104         
+Social.expenditure        -0.615   0.599  -0.261                          -0.435 
+Women.s_status            -0.360   0.340   0.496   0.483   0.164   0.243   0.124 
+
+               Factor1 Factor2 Factor3 Factor4 Factor5 Factor6 Factor7
+SS loadings      7.106   1.926   1.402   1.307   0.987   0.897   0.890
+Proportion Var   0.418   0.113   0.082   0.077   0.058   0.053   0.052
+Cumulative Var   0.418   0.531   0.614   0.691   0.749   0.801   0.854
+
+Test of the hypothesis that 7 factors are sufficient.
+The chi square statistic is 57.19 on 38 degrees of freedom.
+The p-value is 0.0235 
+R > factanal(working.data.2.scaled,factors=8,rotation="none")
+
+Call:
+factanal(x = working.data.2.scaled, factors = 8, rotation = "none")
+
+Uniquenesses:
+                    Trust           Life.expectancy          Infant.mortality                   Obesity            Teenage.births                 Homicides 
+                    0.196                     0.134                     0.054                     0.005                     0.005                     0.144 
+       Imprisonment..log.               Drugs.index            Calorie.intake Public.health.expenditure           Child.wellbeing               Foreign.aid 
+                    0.005                     0.227                     0.168                     0.265                     0.005                     0.005 
+              Peace.index           Maternity.leave               Advertising        Social.expenditure            Women.s_status 
+                    0.005                     0.247                     0.343                     0.005                     0.162 
+
+Loadings:
+                          Factor1 Factor2 Factor3 Factor4 Factor5 Factor6 Factor7 Factor8
+Trust                     -0.484   0.258   0.315   0.358   0.146   0.462           0.187 
+Life.expectancy           -0.365  -0.358   0.533   0.119  -0.252  -0.145  -0.470         
+Infant.mortality           0.773          -0.488   0.102   0.180   0.122   0.227         
+Obesity                    0.712   0.391          -0.480   0.216   0.162   0.171         
+Teenage.births             0.924   0.170           0.203   0.203   0.118                 
+Homicides                  0.650   0.455   0.101          -0.295           0.229  -0.273 
+Imprisonment..log.         0.770   0.261           0.491  -0.190  -0.130   0.190         
+Drugs.index                0.619          -0.158   0.378                           0.465 
+Calorie.intake             0.328   0.394  -0.574  -0.300          -0.145   0.255  -0.253 
+Public.health.expenditure -0.546           0.185   0.203   0.529  -0.232  -0.142         
+Child.wellbeing           -0.790   0.220                  -0.379   0.295   0.298         
+Foreign.aid               -0.645   0.559           0.271   0.207   0.311  -0.227         
+Peace.index                0.742   0.349          -0.187  -0.429          -0.321         
+Maternity.leave           -0.595   0.370   0.300   0.135   0.144   0.182  -0.183  -0.259 
+Advertising                0.756                           0.197                   0.164 
+Social.expenditure        -0.596   0.617                          -0.493                 
+Women.s_status            -0.289   0.409   0.433   0.313   0.288   0.379   0.155   0.228 
+
+               Factor1 Factor2 Factor3 Factor4 Factor5 Factor6 Factor7 Factor8
+SS loadings      7.085   1.987   1.303   1.178   1.126   0.996   0.791   0.560
+Proportion Var   0.417   0.117   0.077   0.069   0.066   0.059   0.047   0.033
+Cumulative Var   0.417   0.534   0.610   0.680   0.746   0.804   0.851   0.884
+
+Test of the hypothesis that 8 factors are sufficient.
+The chi square statistic is 40.26 on 28 degrees of freedom.
+The p-value is 0.0627 
+R > loadings(factanal(working.data.2.scaled,factors=8,rotation="none"))
+
+Loadings:
+                          Factor1 Factor2 Factor3 Factor4 Factor5 Factor6 Factor7 Factor8
+Trust                     -0.484   0.258   0.315   0.358   0.146   0.462           0.187 
+Life.expectancy           -0.365  -0.358   0.533   0.119  -0.252  -0.145  -0.470         
+Infant.mortality           0.773          -0.488   0.102   0.180   0.122   0.227         
+Obesity                    0.712   0.391          -0.480   0.216   0.162   0.171         
+Teenage.births             0.924   0.170           0.203   0.203   0.118                 
+Homicides                  0.650   0.455   0.101          -0.295           0.229  -0.273 
+Imprisonment..log.         0.770   0.261           0.491  -0.190  -0.130   0.190         
+Drugs.index                0.619          -0.158   0.378                           0.465 
+Calorie.intake             0.328   0.394  -0.574  -0.300          -0.145   0.255  -0.253 
+Public.health.expenditure -0.546           0.185   0.203   0.529  -0.232  -0.142         
+Child.wellbeing           -0.790   0.220                  -0.379   0.295   0.298         
+Foreign.aid               -0.645   0.559           0.271   0.207   0.311  -0.227         
+Peace.index                0.742   0.349          -0.187  -0.429          -0.321         
+Maternity.leave           -0.595   0.370   0.300   0.135   0.144   0.182  -0.183  -0.259 
+Advertising                0.756                           0.197                   0.164 
+Social.expenditure        -0.596   0.617                          -0.493                 
+Women.s_status            -0.289   0.409   0.433   0.313   0.288   0.379   0.155   0.228 
+
+               Factor1 Factor2 Factor3 Factor4 Factor5 Factor6 Factor7 Factor8
+SS loadings      7.085   1.987   1.303   1.178   1.126   0.996   0.791   0.560
+Proportion Var   0.417   0.117   0.077   0.069   0.066   0.059   0.047   0.033
+Cumulative Var   0.417   0.534   0.610   0.680   0.746   0.804   0.851   0.884
+R > factanal(working.data.2.scaled,factors=8,rotation="none")$loadings
+
+Loadings:
+                          Factor1 Factor2 Factor3 Factor4 Factor5 Factor6 Factor7 Factor8
+Trust                     -0.484   0.258   0.315   0.358   0.146   0.462           0.187 
+Life.expectancy           -0.365  -0.358   0.533   0.119  -0.252  -0.145  -0.470         
+Infant.mortality           0.773          -0.488   0.102   0.180   0.122   0.227         
+Obesity                    0.712   0.391          -0.480   0.216   0.162   0.171         
+Teenage.births             0.924   0.170           0.203   0.203   0.118                 
+Homicides                  0.650   0.455   0.101          -0.295           0.229  -0.273 
+Imprisonment..log.         0.770   0.261           0.491  -0.190  -0.130   0.190         
+Drugs.index                0.619          -0.158   0.378                           0.465 
+Calorie.intake             0.328   0.394  -0.574  -0.300          -0.145   0.255  -0.253 
+Public.health.expenditure -0.546           0.185   0.203   0.529  -0.232  -0.142         
+Child.wellbeing           -0.790   0.220                  -0.379   0.295   0.298         
+Foreign.aid               -0.645   0.559           0.271   0.207   0.311  -0.227         
+Peace.index                0.742   0.349          -0.187  -0.429          -0.321         
+Maternity.leave           -0.595   0.370   0.300   0.135   0.144   0.182  -0.183  -0.259 
+Advertising                0.756                           0.197                   0.164 
+Social.expenditure        -0.596   0.617                          -0.493                 
+Women.s_status            -0.289   0.409   0.433   0.313   0.288   0.379   0.155   0.228 
+
+               Factor1 Factor2 Factor3 Factor4 Factor5 Factor6 Factor7 Factor8
+SS loadings      7.085   1.987   1.303   1.178   1.126   0.996   0.791   0.560
+Proportion Var   0.417   0.117   0.077   0.069   0.066   0.059   0.047   0.033
+Cumulative Var   0.417   0.534   0.610   0.680   0.746   0.804   0.851   0.884
+R > names(international.inequality)
+ [1] "Country"                           "Income.inequality"                 "Trust"                             "Life.expectancy"                  
+ [5] "Infant.mortality"                  "Obesity"                           "Mental.illness"                    "Maths.and.literacy.scores"        
+ [9] "Teenage.births"                    "Homicides"                         "Imprisonment..log."                "Social.mobility"                  
+[13] "Index.of.health...social_problems" "Child.overweight"                  "Drugs.index"                       "Calorie.intake"                   
+[17] "Public.health.expenditure"         "Child.wellbeing"                   "Maths.education.science.score"     "Child.conflict"                   
+[21] "Foreign.aid"                       "Recycling"                         "Peace.index"                       "Maternity.leave"                  
+[25] "Advertising"                       "Police"                            "Social.expenditure"                "Women.s_status"                   
+[29] "Lone.parents"                     
+R > summary(prcomp(working.data.2.scaled[,1:7]))
+Importance of components:
+                          PC1    PC2    PC3     PC4     PC5     PC6     PC7
+Standard deviation     2.0342 0.9790 0.9093 0.72236 0.63025 0.33230 0.21744
+Proportion of Variance 0.5911 0.1369 0.1181 0.07454 0.05675 0.01578 0.00675
+Cumulative Proportion  0.5911 0.7281 0.8462 0.92072 0.97747 0.99325 1.00000
+R > factanal(working.data.2.scaled[,1:7],factors=4,rotation="none")$loadings
+다음에 오류가 있습니다factanal(working.data.2.scaled[, 1:7], factors = 4, rotation = "none") : 
+  4 factors are too many for 7 variables
+R > factanal(working.data.2.scaled[,1:7],factors=3,rotation="none")$loadings
+
+Loadings:
+                   Factor1 Factor2 Factor3
+Trust              -0.396           0.178 
+Life.expectancy    -0.701   0.120   0.299 
+Infant.mortality    0.912   0.203  -0.350 
+Obesity             0.826  -0.543   0.133 
+Teenage.births      0.896   0.127   0.183 
+Homicides           0.682           0.426 
+Imprisonment..log.  0.746   0.521   0.406 
+
+               Factor1 Factor2 Factor3
+SS loadings      3.988   0.644   0.641
+Proportion Var   0.570   0.092   0.092
+Cumulative Var   0.570   0.662   0.753
+R > ls()
+ [1] "countries.with.NA"        "country"                  "country.2"                "health.social.index"      "health.social.index.2"   
+ [6] "inequality.index"         "inequality.index.2"       "international.inequality" "mean.zscores.rev"         "prod.vs.income"          
+[11] "variables.with.NA"        "working.data"             "working.data.2"           "working.data.2.scaled"    "zscores"                 
+[16] "zscores.rev"             
+R > save(file="international_inequality.rda",list=ls())
+R > factanal(working.data.2.scaled[,1:7],factors=3,rotation="none")$loadings[,1]
+             Trust    Life.expectancy   Infant.mortality            Obesity     Teenage.births          Homicides Imprisonment..log. 
+        -0.3958721         -0.7014086          0.9118458          0.8261223          0.8963263          0.6822640          0.7460186 
+R > working.data.2.scaled[,1:7]
+            Trust Life.expectancy Infant.mortality     Obesity Teenage.births   Homicides Imprisonment..log.
+ [1,] -0.04604984      0.57497607       0.06538147  0.44048771     0.29469383 -0.06534348         0.26628617
+ [2,] -0.43809579     -0.01197867      -0.04023475 -0.13812206    -0.09374711 -0.48817655         0.11331327
+ [3,] -0.64718696      0.23957336       0.17099769 -0.28841031    -0.45570345 -0.37648480        -0.29461449
+ [4,] -0.11792493      0.65882675       0.48784635 -0.40112650     0.45360149 -0.03343155         0.53823801
+ [5,]  1.69202052     -1.60514154       0.48784635 -0.06297793    -0.61461111 -0.40041874        -0.48158138
+ [6,]  1.13662209     -0.43123206      -1.20201317  0.61331920    -0.51750087  0.83616856        -0.58356332
+ [7,] -1.20258538      0.40727472      -0.46269963 -0.13812206    -0.50867267  0.30164372         0.07931929
+ [8,] -0.37928889     -0.17968002      -0.46269963  0.53817508    -0.17320094 -0.32063892         0.09631628
+ [9,] -1.10457389     -0.17968002       0.17099769  1.96591348    -0.28796758 -0.30468295        -1.90932852
+[10,] -0.35315250     -1.26973883       1.12154367  0.38788682     0.32117844 -0.72751603        -0.48158138
+[11,] -0.52303907      0.15572269      -0.25146719 -0.85950567    -0.74703416  0.17399600        -0.05665663
+[12,]  0.16304133      2.58739233      -1.73009427 -1.95660992    -0.92359822 -0.99876744        -1.29743689
+[13,]  1.25423588     -0.17968002      -0.25146719 -0.66413095    -0.78234697 -0.25681506        -0.39659643
+[14,]  0.55508727     -0.17968002       1.22715989  0.16245444     1.30110901 -0.43233068         0.87817781
+[15,]  1.61361133      0.32342404      -1.09639695 -0.58898682    -0.23499836 -0.63975822        -0.85551515
+[16,] -1.99974547     -1.94054425       1.22715989  0.31274270     0.54188353  1.34675944         0.58922898
+[17,] -0.28781151      0.65882675      -0.77954829 -0.51384269    -0.63226751 -0.76740594         0.48724704
+[18,]  1.67895232      1.32963217      -1.73009427 -0.66413095    -0.75586236  0.07826021        -0.49857837
+[19,]  0.02582525      0.49112540       0.06538147 -1.49071634    -0.84414439 -0.40041874        -0.05665663
+[20,] -0.70599385     -0.26353070       0.80469501  1.02661190     1.38939105 -0.21692515         0.62322296
+[21,] -0.31394790     -1.18588815       2.17770587  2.31909087     3.26979835  3.69228632         3.24075939
+R > factanal(working.data.2.scaled[,1:7],factors=3,rotation="none")$loadings[,1]
+             Trust    Life.expectancy   Infant.mortality            Obesity     Teenage.births          Homicides Imprisonment..log. 
+        -0.3958721         -0.7014086          0.9118458          0.8261223          0.8963263          0.6822640          0.7460186 
+R > working.data.2.scaled[1,1:7]
+             Trust    Life.expectancy   Infant.mortality            Obesity     Teenage.births          Homicides Imprisonment..log. 
+       -0.04604984         0.57497607         0.06538147         0.44048771         0.29469383        -0.06534348         0.26628617 
+R > factanal(working.data.2.scaled[,1:7],factors=3,rotation="none")$loadings[,1]*working.data.2.scaled[1,1:7]
+             Trust    Life.expectancy   Infant.mortality            Obesity     Teenage.births          Homicides Imprisonment..log. 
+        0.01822985        -0.40329316         0.05961782         0.36389674         0.26414184        -0.04458150         0.19865445 
+R > 
+R > sum(factanal(working.data.2.scaled[,1:7],factors=3,rotation="none")$loadings[,1]*working.data.2.scaled[1,1:7])
+[1] 0.456666
+R > sum(factanal(working.data.2.scaled[,1:7],factors=3,rotation="none")$loadings[,1]*working.data.2.scaled[2,1:7])
+[1] -0.3015213
+R > sum(factanal(working.data.2.scaled[,1:7],factors=3,rotation="none")$loadings[,1]*working.data.2.scaled[3,1:7])
+[1] -0.8792832
+R > sum(factanal(working.data.2.scaled[,1:7],factors=3,rotation="none")$loadings[,1]*working.data.2.scaled[4,1:7])
+[1] 0.4833389
+R > sum(factanal(working.data.2.scaled[,1:7],factors=3,rotation="none")$loadings[,1]*working.data.2.scaled[5,1:7])
+[1] -0.3345025
+R > apply(working.data.2.scaled[,1:7],1,'*',factanal(working.data.2.scaled[,1:7],factors=3,rotation="none")$loadings[,1])
+                          [,1]         [,2]       [,3]        [,4]        [,5]       [,6]        [,7]        [,8]       [,9]      [,10]      [,11]       [,12]
+Trust               0.01822985  0.173429878  0.2562032  0.04668318 -0.66982363 -0.4499569  0.47606994  0.15014987  0.4372699  0.1398032  0.2070566 -0.06454351
+Life.expectancy    -0.40329316  0.008401941 -0.1680388 -0.46210674  1.12586006  0.3024699 -0.28566599  0.12602911  0.1260291  0.8906057 -0.1092252 -1.81481920
+Infant.mortality    0.05961782 -0.036687889  0.1559235  0.44484065  0.44484065 -1.0960507 -0.42191072 -0.42191072  0.1559235  1.0226749 -0.2292993 -1.57757922
+Obesity             0.36389674 -0.114105720 -0.2382622 -0.33137957 -0.05202748  0.5066767 -0.11410572  0.44459845  1.6240850  0.3204420 -0.7100568 -1.61639917
+Teenage.births      0.26414184 -0.084028005 -0.4084590  0.40657496 -0.55089212 -0.4638497 -0.45593671 -0.15524456 -0.2581129  0.2878807 -0.6695864 -0.82784541
+Homicides          -0.04458150 -0.333065311 -0.2568620 -0.02280914 -0.27319131  0.5704877  0.20580067 -0.21876041 -0.2078742 -0.4963580  0.1187112 -0.68142311
+Imprisonment..log.  0.19865445  0.084533807 -0.2197879  0.40153558 -0.35926868 -0.4353491  0.05917367  0.07185374 -1.4243947 -0.3592687 -0.0422669 -0.96791209
+                        [,13]      [,14]      [,15]     [,16]      [,17]       [,18]       [,19]      [,20]     [,21]
+Trust              -0.4965169 -0.2197435 -0.6387836 0.7916433  0.1139365 -0.66465030 -0.01022349  0.2794832 0.1242832
+Life.expectancy     0.1260291  0.1260291 -0.2268524 1.3611144 -0.4621067 -0.93261542 -0.34447957  0.1848427 0.8317921
+Infant.mortality   -0.2292993  1.1189806 -0.9997450 1.1189806 -0.7108278 -1.57757922  0.05961782  0.7337578 1.9857320
+Obesity            -0.5486534  0.1342072 -0.4865752 0.2583637 -0.4244969 -0.54865341 -1.23151407  0.8481070 1.9158528
+Teenage.births     -0.7012382  1.1662183 -0.2106352 0.4857045 -0.5667180 -0.67749934 -0.75662885  1.2453478 2.9308064
+Homicides          -0.1752157 -0.2949637 -0.4364840 0.9188455 -0.5235735  0.05339413 -0.27319131 -0.1480002 2.5191142
+Imprisonment..log. -0.2958683  0.6551370 -0.6382302 0.4395758  0.3634954 -0.37194875 -0.04226690  0.4649359 2.4176669
+R > apply(apply(working.data.2.scaled[,1:7],1,'*',factanal(working.data.2.scaled[,1:7],factors=3,rotation="none")$loadings[,1]),2,sum)
+ [1]  0.456666035 -0.301521299 -0.879283203  0.483338935 -0.334502513 -1.065572055 -0.536574860 -0.003284517  0.452925811  1.805779778 -1.434666897 -7.550521709
+[13] -2.320762732  2.685865027 -3.637305666  5.374227898 -2.210291119 -4.719552311 -2.598686381  3.608474223 12.725247558
+R > score<-apply(apply(working.data.2.scaled[,1:7],1,'*',factanal(working.data.2.scaled[,1:7],factors=3,rotation="none")$loadings[,1]),2,sum)
+R > plot(inequality.index.2,score)
+R > cor(inequality.index.2,score)
+[1] 0.825464
+R > cor(inequality.index.2,health.social.index.2)
+[1] 0.8735785
+R > plot(inequality.index.2,health.social.index.2)
+R > plot(inequality.index.2,score)
+R > loadings.reduced<-factanal(working.data.2.scaled[,1:7],factors=3,rotation="none")$loadings
+R > scores.reduced<-apply(working.data.2.scaled[,1:7],1,'*',factanal(working.data.2.scaled[,1:7],factors=3,rotation="none")$loadings[,1])
+R > sum.scores.reduced<-score
+R > quartz(dpi=72)
+R > plot(inequality.index.2,sum.scores.reduced,xlab="Income Inequality",ylab="Health and Social Problems Index",ylim=c(-13,13))
+R > text(inequality.index.2,sum.scores.reduced,labels=country.2,cex=0.5,pos=1)

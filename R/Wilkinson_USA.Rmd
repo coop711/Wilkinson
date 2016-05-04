@@ -1,0 +1,130 @@
+---
+title: "Wilkinson_USA"
+author: "coop711"
+date: "2015년 5월 5일"
+output: html_document
+---
+
+미국의 경우
+-----------
+
+`xlsx` 패키지를 이용하여 자료를 읽어들인다. 
+
+```{r}
+library(xlsx)
+data.usa<-read.xlsx("USA-inequality.xls", 1)
+str(data.usa)
+```
+
+당장 필요한 변수들만 모아서 data frame으로 재구성한다. 변수명 설정에 유의한다.
+
+```{r}
+data.usa.1<-data.frame(Abb=data.usa$State.Abbrev, Gini=data.usa$Income.Inequality, HS.index=data.usa$Index.of.health...social.problems)
+options(digits=3)
+data.usa.1
+```
+
+간단한 산점도를 그리고, 추가 작업을 생각한다.
+
+```{r fig.width=12, fig.height=9}
+plot(HS.index~Gini, data=data.usa.1)
+```
+
+x-축과 y-축의 범위를 설정하고, `pch=20`으로 다시 그린다.
+
+```{r fig.width=12, fig.height=9}
+plot(HS.index~Gini, data=data.usa.1, pch=20, xlim=c(0.39, 0.51), ylim=c(-1.5, 2.0))
+```
+
+각 주의 약칭을 새겨넣는다.
+
+```{r fig.width=12, fig.height=9}
+plot(HS.index~Gini, data=data.usa.1, pch=20, xlim=c(0.39, 0.51), ylim=c(-1.5, 2.0))
+text(data.usa.1$Gini, data.usa.1$HS.index, labels=data.usa.1$Abb, pos=4)
+```
+
+겹쳐보이는 주의 약칭들로부터 인덱스를 추출한다.
+
+```{r}
+which(data.usa.1$Abb %in% c("VT", "ME", "NE", "WA", "VA", "HI", "RI", "SC", "AR", "NC", "GA", "KY"))
+```
+
+점 왼쪽에 약칭을 넣을 주들의 인덱스를 저장한다. 나머지 인덱스는 오른쪽에 넣을 것으로 따로 저장한다.
+
+```{r}
+text.left<-which(data.usa.1$Abb %in% c("VT", "ME", "NE", "WA", "VA", "HI", "RI", "SC", "AR", "NC", "GA", "KY"))
+text.right<-(1:50)[-text.left]
+```
+
+왼쪽, 오른쪽 위치를 조정한 주 약칭을 다시 넣는다.
+
+```{r fig.width=12, fig.height=9}
+plot(HS.index~Gini, data=data.usa.1, pch=20, xlim=c(0.39, 0.51), ylim=c(-1.5, 2.0))
+text(data.usa.1$Gini[text.right], data.usa.1$HS.index[text.right], labels=data.usa.1$Abb[text.right], pos=4)
+text(data.usa.1$Gini[text.left], data.usa.1$HS.index[text.left], labels=data.usa.1$Abb[text.left], pos=2)
+```
+
+점 아래에 약칭을 넣을 주들의 인덱스를 찾는다. 왼쪽 인덱스, 오른쪽 인덱스에서 조정한다.
+
+```{r}
+text.down<-which(data.usa.1$Abb %in% c("WA", "AR", "GA", "MN"))
+which(text.left %in% text.down)
+text.left<-text.left[!(text.left %in% text.down)]
+text.right<-text.right[!(text.right %in% text.down)]
+```
+
+약칭 위치를 아래로 조정한 산점도를 다시 그린다.
+
+```{r fig.width=12, fig.height=9}
+plot(HS.index~Gini, data=data.usa.1, pch=20, xlim=c(0.39, 0.51), ylim=c(-1.5, 2.0))
+text(data.usa.1$Gini[text.right], data.usa.1$HS.index[text.right], labels=data.usa.1$Abb[text.right], pos=4)
+text(data.usa.1$Gini[text.left], data.usa.1$HS.index[text.left], labels=data.usa.1$Abb[text.left], pos=2)
+text(data.usa.1$Gini[text.down], data.usa.1$HS.index[text.down], labels=data.usa.1$Abb[text.down], pos=1)
+```
+
+
+상관계수를 추가한다.
+
+```{r fig.width=12, fig.height=9}
+plot(HS.index~Gini, data=data.usa.1, pch=20, xlim=c(0.39, 0.51), ylim=c(-1.5, 2.0))
+text(data.usa.1$Gini[text.right], data.usa.1$HS.index[text.right], labels=data.usa.1$Abb[text.right], pos=4)
+text(data.usa.1$Gini[text.left], data.usa.1$HS.index[text.left], labels=data.usa.1$Abb[text.left], pos=2)
+text(data.usa.1$Gini[text.down], data.usa.1$HS.index[text.down], labels=data.usa.1$Abb[text.down], pos=1)
+text(x=0.42, y=1.5, labels=paste("r =", round(cor(data.usa.1$HS.index, data.usa.1$Gini), digits=2)), col="red", cex=2)
+```
+
+단순회귀선을 추가한다.
+
+```{r fig.width=12, fig.height=9}
+plot(HS.index~Gini, data=data.usa.1, pch=20, xlim=c(0.39, 0.51), ylim=c(-1.5, 2.0))
+text(data.usa.1$Gini[text.right], data.usa.1$HS.index[text.right], labels=data.usa.1$Abb[text.right], pos=4)
+text(data.usa.1$Gini[text.left], data.usa.1$HS.index[text.left], labels=data.usa.1$Abb[text.left], pos=2)
+text(data.usa.1$Gini[text.down], data.usa.1$HS.index[text.down], labels=data.usa.1$Abb[text.down], pos=1)
+text(x=0.42, y=1.5, labels=paste("r =", round(cor(data.usa.1$HS.index, data.usa.1$Gini), digits=2)), col="red", cex=2)
+abline(lm(HS.index~Gini, data=data.usa.1)$coefficient)
+```
+
+주제목을 추가하고, `xlab`, `ylab`을 수정한다. 수직축의 의미를 명확히 한다.
+
+```{r fig.width=12, fig.height=9}
+plot(HS.index~Gini, data=data.usa.1, pch=20, xlim=c(0.39, 0.51), ylim=c(-1.5, 2.0), ann=FALSE)
+text(data.usa.1$Gini[text.right], data.usa.1$HS.index[text.right], labels=data.usa.1$Abb[text.right], pos=4)
+text(data.usa.1$Gini[text.left], data.usa.1$HS.index[text.left], labels=data.usa.1$Abb[text.left], pos=2)
+text(data.usa.1$Gini[text.down], data.usa.1$HS.index[text.down], labels=data.usa.1$Abb[text.down], pos=1)
+text(x=0.42, y=1.5, labels=paste("r =", round(cor(data.usa.1$HS.index, data.usa.1$Gini), digits=2)), col="red", cex=2)
+abline(lm(HS.index~Gini, data=data.usa.1)$coefficient)
+mtext("Worse", side=2, at=2.3, las=1)
+mtext("Better", side=2, at=-1.8, las=1)
+title(main="Income Inequality vs Health and Social Index (USA)", xlab="Gini Coefficients", ylab="Index of Health and Social Problems")
+```
+
+뒷 마무리
+---------
+
+```{r}
+save(file="Income_inequality_vs_health_social_index_USA.rda", list=ls())
+```
+
+```
+savehistory("Income_inequality_vs_health_social_index_USA.Rhistory")
+```
