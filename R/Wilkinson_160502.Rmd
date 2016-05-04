@@ -255,7 +255,7 @@ str(data.usa)
 
 ```{r, variables}
 data.usa.1 <- data.frame(Gini = data.usa$Income.Inequality,  HS.index = data.usa$Index.of.health...social.problems)
-(Abb <- data.usa$State.Abbrev)
+Abb <- data.usa$State.Abbrev
 options(digits = 3)
 data.usa.1
 ```
@@ -305,8 +305,8 @@ text(data.usa.1[text.left.us, ], labels = Abb[text.left.us], pos = 2)
 ```{r, Abb under dots}
 text.down.us <- which(Abb %in% c("WA", "AR", "GA", "MN"))
 which(text.left.us %in% text.down.us)
-(text.left.us <- setdiff(text.left.us, text.down.us))
-(text.right.us <- setdiff(text.right.us, text.down.us))
+text.left.us <- setdiff(text.left.us, text.down.us)
+text.right.us <- setdiff(text.right.us, text.down.us)
 ```
 
 약칭 위치를 아래로 조정한 산점도를 다시 그린다.
