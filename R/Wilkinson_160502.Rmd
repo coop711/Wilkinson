@@ -20,7 +20,7 @@ Equality Trust에서 기부금을 받고 제공하는 두 종류의 자료 중 2
 
 ```{r, data with GDP}
 library(knitr)
-data.full <- read.csv("../data/international-inequality_GDP.csv", 1)
+data.full <- read.csv("../data/international-inequality_GDP.csv", stringsAsFactors = FALSE)
 str(data.full)
 ```
 
@@ -115,6 +115,7 @@ text.right
 
 ```{r, plot labels adjusted, fig.width = 8, fig.height = 6}
 plot(Index_inequality.df, pch = 20, col = "red", xlim = c(3, 9), ylim = c(-1.5, 2.5))
+text(Index_inequality.df[text.left, ], labels = Country[text.left], pos = 2, cex = 0.8)
 text(Index_inequality.df[text.right, ], labels = Country[text.right], pos = 4, cex = 0.8)
 ```
 
@@ -155,6 +156,67 @@ title(main = main.title, xlab = x.lab, ylab = y.lab)
 mtext(c("Better", "Worse"), side = 2, at = c(-1.8, 2.8), las = 1)
 ```
 
+상관계수를 텍스트로 그림 안에 넣어주고 여기까지 작업한 내용을 별도의 파일로 저장해 놓으려면,
+
+```{r, correlation and separate file, fig.width = 8, fig.height = 6}
+plot(Index_inequality.df, pch = 20, col = "red", xlim = c(3, 9), ylim = c(-1.5, 2.5), ann = FALSE)
+text(Index_inequality.df[text.right, ], labels = Country[text.right], pos = 4, cex = 0.8)
+text(Index_inequality.df[text.left, ], labels = Country[text.left], pos = 2, cex = 0.8)
+text(Index_inequality.df[text.up, ], labels = Country[text.up], pos = 3, cex = 0.8)
+main.title <- "Income Inequality vs Index of Health and Social Problems" 
+x.lab <- "Income Inequality (5th Ratio)"
+y.lab <- "Index of Health and Social Problems"
+title(main = main.title, xlab = x.lab, ylab = y.lab)
+mtext(c("Better", "Worse"), side = 2, at = c(-1.8, 2.8), las = 1)
+text(x = 5, y = 1.5, labels = paste("r =", round(cor(Index_inequality.df[1], Index_inequality.df[2]), digits = 2)))
+dev.copy(png, file = "../pics/inequality_health_social_en_72dpi.png", width = 640, height = 480)
+dev.off()
+```
+
+선형회귀선을 추가하여 대체적인 추세를 보려면 `lm()`을 이용하되, `x`, `y`의 순서를 제대로 바꿔야 함에 유의.
+
+```{r, lm to abline, fig.width = 8, fig.height = 6}
+plot(Index_inequality.df, pch = 20, col = "red", xlim = c(3, 9), ylim = c(-1.5, 2.5), ann = FALSE)
+text(Index_inequality.df[text.right, ], labels = Country[text.right], pos = 4, cex = 0.8)
+text(Index_inequality.df[text.left, ], labels = Country[text.left], pos = 2, cex = 0.8)
+text(Index_inequality.df[text.up, ], labels = Country[text.up], pos = 3, cex = 0.8)
+main.title <- "Income Inequality vs Index of Health and Social Problems" 
+x.lab <- "Income Inequality (5th Ratio)"
+y.lab <- "Index of Health and Social Problems"
+title(main = main.title, xlab = x.lab, ylab = y.lab)
+mtext(c("Better", "Worse"), side = 2, at = c(-1.8, 2.8), las = 1)
+text(x = 5, y = 1.5, labels = paste("r =", round(cor(Index_inequality.df[1], Index_inequality.df[2]), digits = 2)))
+lm.ineq <- lm(Index.HS ~ Income.inequality, data = Index_inequality.df)
+# lm.ineq <- lm(Index_inequality.df[2:1])
+abline(lm.ineq$coef, col = "blue")
+```
+
+GDP와 건강 및 사회문제 지수
+
+```{r, GDP vs Index.HS, fig.width = 10, fig.height = 7.5}
+Index_GDP.df <- data.21[c("GDP_WB", "Index.HS")]
+text.left.2 <- which(Country %in% c("Canada", "Belgium", "Australia"))
+# text.down.2 <- which(Country %in% c("Denmark", "Germany"))
+# text.up.2 <- which(Country %in% c("Austria"))
+# text.right.2 <- setdiff(1:21, c(text.left.2, text.down.2, text.up.2))
+# text.right.2 <- setdiff(1:21, c(text.left.2, text.down.2))
+text.right.2 <- setdiff(1:nrow(data.21), c(text.left.2))
+plot(Index_GDP.df, pch = 20, col = "red", xlim = c(25000, 70000), ylim = c(-1.5, 2.5), xaxt = "n", ann = FALSE)
+axis(side = 1, at = seq(30000, 70000, by = 10000), labels = paste(3:7, "만", sep = ""))
+# text(GDP_WB[text.down.2], Index.HS[text.down.2], labels=Country.kr[text.down.2], pos=1, cex=0.8)
+text(Index_GDP.df[text.left.2, ], labels = Country[text.left.2], pos = 2, cex = 0.8)
+# text(GDP_WB[text.up.2], Index.HS[text.up.2], labels=Country.kr[text.up.2], pos=3, cex=0.8)
+text(Index_GDP.df[text.right.2, ], labels = Country[text.right.2], pos = 4, cex = 0.8)
+text(x = 40000, y = 2, labels = paste("r =", round(cor(Index_GDP.df[1], Index_GDP.df[2]), digits = 2)), cex = 1.2)
+main.title.2 <- "GDP vs Index of Health and Social Problems"
+x.lab.2 <- "GDP (Thousand Dollars)"
+y.lab.2 <- "Index of Health and Social Problems"
+title(main = main.title.2, xlab = x.lab.2, ylab = y.lab.2)
+mtext(c("Better", "Worse"), side = 2, at = c(-1.8, 2.8), las = 1)
+dev.copy(png, file = "../pics/GDP_health_social_en_72dpi.png", width = 640, height = 480)
+dev.off()
+```
+
 ### 한글화
 
 국가명을 한글로 만들어 `Country.kr`로 저장하자.
@@ -166,6 +228,7 @@ Country.kr<-c("호주", "오스트리아", "벨기에", "캐나다", "덴마크"
 "스페인", "스웨덴", "스위스", "영국", "미국")
 ```
 
+<!--
 ```{r, Korean names, fig.width = 8, fig.height = 6}
 par(family = "AppleGothic")
 plot(Index_inequality.df, pch = 20, col = "red", xlim = c(3, 9), ylim = c(-1.5, 2.5), ann = FALSE)
@@ -178,8 +241,9 @@ y.lab.kr <- "건강 및 사회문제 지수"
 title(main = main.title.kr, xlab = x.lab.kr, ylab = y.lab.kr)
 mtext(c("좋음", "나쁨"), side = 2, at = c(-1.8, 2.8), las = 1)
 ```
+-->
 
-끝으로 두 변수 간의 상관계수 r = `r cor(Index_inequality.df[1], Index_inequality.df[2] )` 를 도표 안에 표시하려면, 좌표를 잡아서
+상관계수 r = `r cor(Index_inequality.df[1], Index_inequality.df[2] )` 를 도표 안에 표시하고 별도의 파일로 출력하려면,
 
 ```{r fig.width=8, fig.height=6}
 par(family = "AppleGothic")
@@ -197,11 +261,11 @@ dev.copy(png, file = "../pics/inequality_health_social_72dpi.png", width = 640, 
 dev.off()
 ```
 
-* 단순 회귀선 삽입
+
+선형회귀선을 이번에는 `lsfit`을 이용하여 삽입
 
 ```{r, simple regression line, fig.width = 8, fig.height = 6}
 par(family = "AppleGothic")
-lm.ineq <- lm(Index_inequality.df)
 plot(Index_inequality.df, pch = 20, col = "red", xlim = c(3, 9), ylim = c(-1.5, 2.5), ann = FALSE)
 text(Index_inequality.df[text.right, ], labels = Country.kr[text.right], pos = 4, cex = 0.8)
 text(Index_inequality.df[text.left, ], labels = Country.kr[text.left], pos = 2, cex = 0.8)
@@ -212,12 +276,13 @@ y.lab.kr <- "건강 및 사회문제 지수"
 title(main = main.title.kr, xlab = x.lab.kr, ylab = y.lab.kr)
 mtext(c("좋음", "나쁨"), side = 2, at = c(-1.8, 2.8), las = 1)
 text(x = 5, y = 1.5, labels = paste("r =", round(cor(Index_inequality.df[1], Index_inequality.df[2]), digits = 2)))
-abline(lm.ineq$coefficients, col = "blue")
+lsfit.ineq <- lsfit(x = Index_inequality.df[, 1], y = Index_inequality.df[, 2])
+abline(lsfit.ineq$coefficients, col = "blue")
 ```
 
-* GDP와의 관계
+GDP와의 관계
 
-```{r fig.width = 12, fig.height = 9}
+```{r, GDP vs Index, fig.width = 12, fig.height = 9}
 par(family = "AppleGothic")
 Index_GDP.df <- data.21[c("GDP_WB", "Index.HS")]
 text.left.2 <- which(Country %in% c("Canada", "Belgium", "Australia"))
@@ -255,6 +320,7 @@ str(data.usa)
 
 ```{r, variables}
 data.usa.1 <- data.frame(Gini = data.usa$Income.Inequality,  HS.index = data.usa$Index.of.health...social.problems)
+str(data.usa.1)
 Abb <- data.usa$State.Abbrev
 options(digits = 3)
 data.usa.1
@@ -336,7 +402,9 @@ text(data.usa.1[text.right.us, ], labels = Abb[text.right.us], pos = 4)
 text(data.usa.1[text.left.us, ], labels = Abb[text.left.us], pos = 2)
 text(data.usa.1[text.down.us, ], labels = Abb[text.down.us], pos = 1)
 text(x = 0.42, y = 1.5, labels = paste("r =", round(cor(data.usa.1$HS.index, data.usa.1$Gini), digits = 2)), col = "red", cex = 1.2)
-abline(lm(HS.index ~ Gini, data = data.usa.1)$coefficient)
+lm.ineq.us <- lm(data.usa.1[2:1])
+abline(lm.ineq.us$coef, col = "blue")
+# abline(lm(HS.index ~ Gini, data = data.usa.1)$coef)
 ```
 
 주제목을 추가하고, `xlab`, `ylab`을 수정한다. 수직축의 의미를 명확히 한다.
@@ -347,7 +415,7 @@ text(data.usa.1[text.right.us, ], labels = Abb[text.right.us], pos = 4)
 text(data.usa.1[text.left.us, ], labels = Abb[text.left.us], pos = 2)
 text(data.usa.1[text.down.us, ], labels = Abb[text.down.us], pos = 1)
 text(x = 0.42, y = 1.5, labels = paste("r =", round(cor(data.usa.1[1], data.usa.1[2]), digits = 2)), col = "red", cex = 1.2)
-abline(lm(HS.index ~ Gini, data = data.usa.1)$coefficient)
+abline(lm(HS.index ~ Gini, data = data.usa.1)$coef, col = "blue")
 mtext(c("Better", "Worse"), side = 2, at = c(-1.8, 2.3), las = 1)
 main.title.us <- "Income Inequality vs Health and Social Index (USA)"
 x.lab.us <- "Gini Coefficients"
