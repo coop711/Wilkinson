@@ -12,7 +12,7 @@ output: html_document
 
 ```{r, data, message = FALSE}
 # install.packages("xlsx", repos = "https://cran.rstudio.com")
-library(xlsx)
+# library(xlsx)
 ```
 -->
 
@@ -20,7 +20,8 @@ Equality Trust에서 기부금을 받고 제공하는 두 종류의 자료 중 2
 
 ```{r, data with GDP}
 library(knitr)
-data.full <- read.csv("../data/international-inequality_GDP.csv", stringsAsFactors = FALSE)
+load("Inequality_Index_HS.rda")
+# data.full <- read.csv("../data/international-inequality_GDP.csv", stringsAsFactors = FALSE)
 str(data.full)
 ```
 
@@ -289,7 +290,7 @@ dev.off()
 `xlsx` 패키지를 이용하여 자료를 읽어들인다. 
 
 ```{r, data_US}
-data.usa <- read.xlsx("../data/USA-inequality.xls", 1)
+# data.usa <- read.xlsx("../data/USA-inequality.xls", 1)
 str(data.usa)
 ```
 
