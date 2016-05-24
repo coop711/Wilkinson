@@ -203,7 +203,8 @@ pos.text.2 <- ifelse(1:nrow(data.21) %in% text.left.2, 2, 4)
 plot(Index_GDP.df, pch = 20, col = "red", xlim = c(25000, 70000), ylim = c(-1.5, 2.5), xaxt = "n", ann = FALSE)
 axis(side = 1, at = seq(30000, 70000, by = 10000), labels = paste(3:7, "만", sep = ""))
 text(Index_GDP.df, labels = Country, pos = pos.text.2, cex = 0.8)
-text(x = 40000, y = 2, labels = paste("r =", round(cor.1, digits = 2)), cex = 1.2)
+cor.2 <- cor(Index_GDP.df["GDP_WB"], Index_GDP.df["Index.HS"])
+text(x = 40000, y = 2, labels = paste("r =", round(cor.2, digits = 2)), cex = 1.2)
 main.title.2 <- "GDP vs Index of Health and Social Problems"
 x.lab.2 <- "GDP (Thousand Dollars)"
 y.lab.2 <- "Index of Health and Social Problems"
@@ -309,7 +310,7 @@ data.usa.1 <- data.frame(Gini = data.usa$Income.Inequality,  HS.index = data.usa
 str(data.usa.1)
 Abb <- data.usa$State.Abbrev
 options(digits = 3)
-kable(data.frame(State = Abb, data.usa.1))
+kable(data.frame(State = data.usa$State, State.Abb = Abb, data.usa.1))
 ```
 
 간단한 산점도를 그리고, 추가 작업을 생각한다.
@@ -375,7 +376,7 @@ text(data.usa.1, labels = Abb, pos = pos.text.us)
 plot(data.usa.1, pch = 20, col = "red", xlim = c(0.39, 0.51), ylim = c(-1.5, 2.0))
 text(data.usa.1, labels = Abb, pos = pos.text.us)
 cor.us <- cor(data.usa.1$HS.index, data.usa.1$Gini)
-text(x = 0.42, y = 1.5, labels = paste("r =", round(cor.us, digits = 2)), col = "red", cex = 1.2)
+text(x = 0.42, y = 1.5, labels = paste("r =", round(cor.us, digits = 2)), col = "red", cex = 2)
 ```
 
 단순회귀선을 추가한다.
@@ -383,7 +384,7 @@ text(x = 0.42, y = 1.5, labels = paste("r =", round(cor.us, digits = 2)), col = 
 ```{r, simple regression line us, fig.width = 12, fig.height = 9}
 plot(data.usa.1, pch = 20, col = "red", xlim = c(0.39, 0.51), ylim = c(-1.5, 2.0))
 text(data.usa.1, labels = Abb, pos = pos.text.us)
-text(x = 0.42, y = 1.5, labels = paste("r =", round(cor.us, digits = 2)), col = "red", cex = 1.2)
+text(x = 0.42, y = 1.5, labels = paste("r =", round(cor.us, digits = 2)), col = "red", cex = 2)
 # lm.ineq.us <- lm(HS.index ~ Gini, data = data.usa.1)
 lm.ineq.us <- lm(data.usa.1[2:1])
 abline(lm.ineq.us$coef, col = "blue")
@@ -395,7 +396,7 @@ abline(lm.ineq.us$coef, col = "blue")
 ```{r, labs and title, fig.width = 12, fig.height = 9}
 plot(data.usa.1, pch = 20, col = "red", xlim = c(0.39, 0.51), ylim = c(-1.5, 2.0), ann = FALSE)
 text(data.usa.1, labels = Abb, pos = pos.text.us)
-text(x = 0.42, y = 1.5, labels = paste("r =", round(cor.us, digits = 2)), col = "red", cex = 1.2)
+text(x = 0.42, y = 1.5, labels = paste("r =", round(cor.us, digits = 2)), col = "red", cex = 2)
 abline(lm.ineq.us$coef, col = "blue")
 mtext(c("Better", "Worse"), side = 2, at = c(-1.8, 2.3), las = 1)
 main.title.us <- "Income Inequality vs Health and Social Index (USA)"
