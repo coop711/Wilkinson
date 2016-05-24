@@ -201,7 +201,8 @@ pos.text.2 <- ifelse(1:nrow(data.21) %in% text.left.2, 2, 4)
 plot(Index_GDP.df, pch = 20, col = "red", xlim = c(25000, 70000), ylim = c(-1.5, 2.5), xaxt = "n", ann = FALSE)
 axis(side = 1, at = seq(30000, 70000, by = 10000), labels = paste(3:7, "만", sep = ""))
 text(Index_GDP.df, labels = Country, pos = pos.text.2, cex = 0.8)
-text(x = 40000, y = 2, labels = paste("r =", round(cor(Index_GDP.df[1], Index_GDP.df[2]), digits = 2)), cex = 1.2)
+cor.2 <- cor(Index_GDP.df["GDP_WB"], Index_GDP.df["Index.HS"])
+text(x = 40000, y = 2, labels = paste("r =", round(cor.2, digits = 2)), cex = 1.2)
 main.title.2 <- "GDP vs Index of Health and Social Problems"
 x.lab.2 <- "GDP (Thousand Dollars)"
 y.lab.2 <- "Index of Health and Social Problems"
