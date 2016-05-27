@@ -305,9 +305,21 @@ str(data.usa)
 ```{r, variables}
 data.usa.1 <- data.frame(Gini = data.usa$Income.Inequality,  HS.index = data.usa$Index.of.health...social.problems)
 str(data.usa.1)
+Gini <- data.usa.1$Gini
+State <- data.usa$State
 Abb <- data.usa$State.Abbrev
 options(digits = 3)
-data.usa.1
+kable(data.frame(State = State, State.Abb = Abb, data.usa.1))
+```
+
+주별 Gini계수를 `barplot()`으로 비교해 보자. 전부 0.4는 넘고 0.5는 넘지 않기 때문에 차이를 살피기 위해서 y축의 범위(`ylim = `)를 조정하였다. 이때 `xpd = FALSE`가 어떤 역할을 하는지 잘 알아두자.
+
+```{r, barplot of Gini, fig.width = 12, fig.height = 8}
+par(mai = c(2.0, 0.8, 0.8, 0.4) + 0.2)
+o.Gini <- order(Gini)
+b.Gini <- barplot(Gini[o.Gini], names.arg = State[o.Gini], col = rev(rainbow(50, start = 0, end = 4/6)), ylim = c(0.3, 0.52), xpd = FALSE, las = 2)
+text(x = b.Gini[c(1, 25, 50)], y = Gini[o.Gini][c(1, 25, 50)] + 0.01, labels = format(Gini[o.Gini][c(1, 25, 50)], digits = 3))
+title(main = "Gini Coefficients of United States")
 ```
 
 간단한 산점도를 그리고, 추가 작업을 생각한다.

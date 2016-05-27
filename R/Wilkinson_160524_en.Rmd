@@ -20,12 +20,24 @@ Equality Trust에서 기부금을 받고 제공하는 두 종류의 자료 중 2
 
 ```{r, data with GDP}
 library(knitr)
-load("Inequality_Index_HS.rda")
-# data.full <- read.csv("../data/international-inequality_GDP.csv", stringsAsFactors = FALSE)
+rm(list = ls())
+# load("Inequality_Index_HS.rda")
+data.full <- read.csv("../data/international-inequality_GDP.csv", stringsAsFactors = FALSE)
 str(data.full)
 ```
 
-이 자료 중 소득불평등을 나타내는 지표는 5분위계수로서 두번째 컬럼에 `Income.inequality`라는 이름으로 나와 있고, 건강과 사회문제 지표는 13번째 컬럼에 `Index.of.health...social_problems`라는 이름으로 주어져 있다. 나라들은 `Country`라는 변수명으로 첫번째 컬럼에 나와 있다. 그리고, 건강과 사회문제 지표에 결측치들이 있기 때문에 먼저 이 나라들을 제외하고 분석작업을 수행하여야 한다.
+이 자료 중 소득불평등을 나타내는 지표는 5분위계수로서 두번째 컬럼에 `Income.inequality`라는 이름으로 나와 있고, 건강과 사회문제 지표는 13번째 컬럼에 `Index.of.health...social_problems`라는 이름으로 주어져 있다. 나라들은 `Country`라는 변수명으로 첫번째 컬럼에 나와 있다. 
+
+```{r, barplots, fig.width = 12, fig.height = 8}
+par(mai = c(2.0, 0.8, 0.8, 0.4) + 0.02)
+o.ineq <- order(data.full$Income.inequality)
+fifth_ratio <- data.full$Income.inequality
+Country <- data.full$Country
+b.ineq <- barplot(fifth_ratio[o.ineq], names.arg = Country[o.ineq], col = rev(rainbow(23, start = 0, end = 4/6)), las = 2, ylim = c(0, 11))
+text(x = b.ineq, y = fifth_ratio[o.ineq] + 0.3, labels = format(fifth_ratio[o.ineq], digits = 2), cex = 0.8)
+```
+
+그리고, 건강과 사회문제 지표에 결측치들이 있기 때문에 먼저 이 나라들을 제외하고 분석작업을 수행하여야 한다.
 `which()`를 이용하여 해당 인덱스를 찾고, 나라명을 추출한다.
 
 ```{r, which}
@@ -309,9 +321,21 @@ str(data.usa)
 ```{r, variables}
 data.usa.1 <- data.frame(Gini = data.usa$Income.Inequality,  HS.index = data.usa$Index.of.health...social.problems)
 str(data.usa.1)
+Gini <- data.usa.1$Gini
+State <- data.usa$State
 Abb <- data.usa$State.Abbrev
 options(digits = 3)
-kable(data.frame(State = Abb, data.usa.1))
+kable(data.frame(State = State, State.Abb = Abb, data.usa.1))
+```
+
+주별 Gini계수를 `barplot()`으로 비교해 보자. 전부 0.4는 넘고 0.5는 넘지 않기 때문에 차이를 살피기 위해서 y축의 범위(`ylim = `)를 조정하였다. 이때 `xpd = FALSE`가 어떤 역할을 하는지 잘 알아두자.
+
+```{r, barplot of Gini, fig.width = 12, fig.height = 8}
+par(mai = c(2.0, 0.8, 0.8, 0.4) + 0.2)
+o.Gini <- order(Gini)
+b.Gini <- barplot(Gini[o.Gini], names.arg = State[o.Gini], col = rev(rainbow(50, start = 0, end = 4/6)), ylim = c(0.3, 0.52), xpd = FALSE, las = 2)
+text(x = b.Gini[c(1, 25, 50)], y = Gini[o.Gini][c(1, 25, 50)] + 0.01, labels = format(Gini[o.Gini][c(1, 25, 50)], digits = 3))
+title(main = "Gini Coefficients of United States")
 ```
 
 간단한 산점도를 그리고, 추가 작업을 생각한다.
@@ -405,6 +429,8 @@ x.lab.us <- "Gini Coefficients"
 y.lab.us <- "Index of Health and Social Problems"
 title(main = main.title.us, xlab = x.lab.us, ylab = y.lab.us)
 ```
+
+
 
 <!--
 ```{r, save}
