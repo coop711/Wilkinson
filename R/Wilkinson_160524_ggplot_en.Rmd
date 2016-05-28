@@ -129,7 +129,6 @@ text.up <- which(Country %in% "Germany")
 text.up
 text.left <- setdiff(1:nrow(data.21), c(text.right, text.up))
 text.left
-pos.text <- ifelse(1:nrow(data.21) %in% text.up, 3, ifelse(1:nrow(data.21) %in% text.left, 2, 4))
 vjust.text <- ifelse(1:nrow(data.21) %in% text.up, "bottom", "center")
 hjust.text <- ifelse(1:nrow(data.21) %in% text.up, "middle", hjust.text)
 p5 <- p2 + geom_text(hjust = hjust.text, vjust = vjust.text)
@@ -184,50 +183,38 @@ ggsave("../pics/Inequality_vs_HS_Index_ggplot.png", p9, width = 8, height = 6)
 ### Scatter Diagram
 
 ```{r, GDP vs Index.HS, fig.width = 10, fig.height = 7.5}
-Index_GDP.df <- data.21[c("GDP_WB", "Index.HS")]
-text.left.2 <- which(Country %in% c("Canada", "Belgium", "Australia"))
+(Index_GDP.df <- data.21[c("Country", "GDP_WB", "Index.HS")])
+cor.2 <- cor(data.21["GDP_WB"], data.21["Index.HS"])
+text.left.2 <- which(Country %in% c("Canada", "Belgium", "Australia", "France"))
 text.right.2 <- setdiff(1:nrow(data.21), c(text.left.2))
-pos.text.2 <- ifelse(1:nrow(data.21) %in% text.left.2, 2, 4)
-plot(Index_GDP.df, pch = 20, col = "red", xlim = c(25000, 70000), ylim = c(-1.5, 2.5), xaxt = "n", ann = FALSE)
-axis(side = 1, at = seq(30000, 70000, by = 10000), labels = paste(3:7, "만", sep = ""))
-text(Index_GDP.df, labels = Country, pos = pos.text.2, cex = 0.8)
-# cor.2 <- cor(Index_GDP.df["GDP_WB"], Index_GDP.df["Index.HS"])
-cor.2 <- cor(Index_GDP.df[1], Index_GDP.df[2])
-text(x = 40000, y = 2, labels = paste("r =", round(cor.2, digits = 2)), cex = 1.2)
+hjust.text.2 <- ifelse(1:nrow(data.21) %in% text.left.2, "right", "left")
+nudge_x.text.2 <- ifelse(hjust.text.2 == "right", -250, 250)
+gd1 <- ggplot(data = Index_GDP.df, aes(x = GDP_WB, y = Index.HS, label = Country)) + theme_bw()
+gd2 <- gd1 + 
+  geom_point(colour = "red")
+gd2
+gd3 <- gd2 + 
+  geom_text(hjust = hjust.text.2)
+gd3
+gd4 <- gd2 + 
+  geom_text(hjust = hjust.text.2, nudge_x = nudge_x.text.2)
+gd4
 main.title.2 <- "GDP vs Index of Health and Social Problems"
 x.lab.2 <- "GDP (Thousand Dollars)"
 y.lab.2 <- "Index of Health and Social Problems"
-title(main = main.title.2, xlab = x.lab.2, ylab = y.lab.2)
-mtext(c("Better", "Worse"), side = 2, at = c(-1.8, 2.8), las = 1)
-# dev.copy(png, file = "../pics/GDP_health_social_en_72dpi.png", width = 640, height = 480)
-# dev.off()
+gd5 <- gd4 + 
+  scale_x_continuous(name = x.lab.2, breaks = seq(20000, 70000, by = 10000), labels = seq(20, 70, by = 10), limits = c(20000, 70000)) +
+  scale_y_continuous(name = y.lab.2, breaks = c(-1.5, -1:2, 2.5), labels = c(expression("Better" %down% ""), -1:2, expression("Worse" %up% "")), limits = c(-1.5, 2.5)) + 
+  labs(title = main.title.2)
+gd5
+gd6 <- gd5 + annotate("text", x = 40000, y = 2, label = paste("r =", round(cor.2, digits = 2)), size = 5)
+gd6
+gd7 <- gd6 + geom_smooth(colour = "blue", se = FALSE)
+gd7
 ```
 
-GDP와의 관계
-
-```{r, GDP vs Index, fig.width = 12, fig.height = 9}
-# par(family = "HCR Dotum LVT")
-Index_GDP.df <- data.21[c("GDP_WB", "Index.HS")]
-text.left.2 <- which(Country %in% c("Canada", "Belgium", "Australia"))
-text.right.2 <- setdiff(1:nrow(data.21), c(text.left.2))
-pos.text.2 <- ifelse(1:nrow(data.21) %in% text.left.2, 2, 4)
-plot(Index_GDP.df, pch = 20, col = "red", xlim = c(25000, 70000), ylim = c(-1.5, 2.5), xaxt = "n", ann = FALSE)
-axis(side = 1, at = seq(30000, 70000, by = 10000), labels = paste(3:7, "만", sep = ""))
-text(Index_GDP.df, labels = Country.kr, pos = pos.text.2, cex = 0.8)
-text(x = 40000, y = 2, labels = paste("r =", round(cor.1, digits = 2)), cex = 1.2)
-main.title.2.kr <- "GDP와 건강 및 사회문제 지수"
-x.lab.2.kr <- "GDP(달러)"
-y.lab.2.kr <- "건강 및 사회문제 지수"
-title(main = main.title.2.kr, xlab = x.lab.2.kr, ylab = y.lab.2.kr)
-mtext(c("좋음", "나쁨"), side = 2, at = c(-1.8, 2.8), las = 1)
-# dev.copy(png, file = "../pics/GDP_health_social_72dpi.png", width = 640, height = 480)
-# dev.off()
-```
--->
-
+<!--
 ### 미국의 경우
-
-<!--`xlsx` 패키지를 이용하여 자료를 읽어들인다. -->
 
 ```{r, data_US}
 data.usa <- read.xlsx("../data/USA-inequality.xls", 1, stringsAsFactors = FALSE)
@@ -347,7 +334,7 @@ x.lab.us <- "Gini Coefficients"
 y.lab.us <- "Index of Health and Social Problems"
 title(main = main.title.us, xlab = x.lab.us, ylab = y.lab.us)
 ```
-
+-->
 
 
 <!--
