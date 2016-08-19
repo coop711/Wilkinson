@@ -185,7 +185,7 @@ ggsave("../pics/Inequality_vs_HS_Index_ggplot.png", p9, width = 8, height = 6)
 ```{r, GDP vs Index.HS, fig.width = 10, fig.height = 7.5}
 (Index_GDP.df <- data.21[c("Country", "GDP_WB", "Index.HS")])
 cor.2 <- cor(data.21["GDP_WB"], data.21["Index.HS"])
-text.left.2 <- which(Country %in% c("Canada", "Belgium", "Australia", "France"))
+text.left.2 <- which(Country %in% c("Australia", "Belgium", "Canada", "France"))
 text.right.2 <- setdiff(1:nrow(data.21), c(text.left.2))
 hjust.text.2 <- ifelse(1:nrow(data.21) %in% text.left.2, "right", "left")
 nudge_x.text.2 <- ifelse(hjust.text.2 == "right", -250, 250)
