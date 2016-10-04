@@ -1,0 +1,145 @@
+---
+title: "Income Inequality vs Index of Health and Social Problems"
+author: "coop711"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+### Data Reading
+
+```{r, data_US}
+library(knitr)
+# library(xlsx)
+# data.usa <- read.xlsx("../data/USA-inequality.xls", 1, stringsAsFactors = FALSE)
+load("./Inequality_Index_HS_US.RData")
+str(data.usa)
+```
+
+당장 필요한 변수들만 모아서 data frame으로 재구성한다. 변수명 설정에 유의한다.
+
+```{r, variables}
+data.usa.1 <- data.frame(Gini = data.usa$Income.Inequality,  HS.index = data.usa$Index.of.health...social.problems)
+str(data.usa.1)
+Gini <- data.usa.1$Gini
+State <- data.usa$State
+Abb <- data.usa$State.Abbrev
+options(digits = 3)
+kable(data.frame(State = State, State.Abb = Abb, data.usa.1))
+```
+
+주별 Gini계수를 `barplot()`으로 비교해 보자. 전부 0.4는 넘고 0.5는 넘지 않기 때문에 차이를 살피기 위해서 y축의 범위(`ylim = `)를 조정하였다. 이때 `xpd = FALSE`가 어떤 역할을 하는지 잘 알아두자.
+
+```{r, barplot of Gini, fig.width = 12, fig.height = 8}
+par(mai = c(2.0, 0.8, 0.8, 0.4) + 0.2)
+o.Gini <- order(Gini)
+b.Gini <- barplot(Gini[o.Gini], names.arg = State[o.Gini], col = rev(rainbow(50, start = 0, end = 4/6)), ylim = c(0.3, 0.52), xpd = FALSE, las = 2)
+text(x = b.Gini[c(1, 25, 50)], y = Gini[o.Gini][c(1, 25, 50)] + 0.01, labels = format(Gini[o.Gini][c(1, 25, 50)], digits = 3))
+title(main = "Gini Coefficients of United States")
+```
+
+간단한 산점도를 그리고, 추가 작업을 생각한다.
+
+```{r, first plot,fig.width = 12, fig.height = 9}
+plot(data.usa.1)
+```
+
+x-축과 y-축의 범위를 설정하고, `pch = 20`으로 다시 그린다.
+
+```{r, pch-xlim-ylim, fig.width = 12, fig.height = 9}
+plot(data.usa.1, pch = 20, xlim = c(0.39, 0.51), ylim = c(-1.5, 2.0))
+```
+
+각 주의 약칭을 새겨넣는다.
+
+```{r, Abb, fig.width = 12, fig.height = 9}
+plot(data.usa.1, pch = 20, xlim = c(0.39, 0.51), ylim = c(-1.5, 2.0))
+text(data.usa.1, labels = Abb, pos = 4)
+```
+
+겹쳐보이는 주의 약칭들로부터 인덱스를 추출한다.
+
+```{r, index extraction}
+which(Abb %in% c("VT", "ME", "NE", "WA", "VA", "HI", "RI", "SC", "AR", "NC", "GA", "KY"))
+```
+
+점 왼쪽에 약칭을 넣을 주들의 인덱스를 저장한다. 나머지 인덱스는 오른쪽에 넣을 것으로 따로 저장한다.
+
+```{r, left to the point}
+text.left.us <- which(Abb %in% c("VT", "ME", "NE", "WA", "VA", "HI", "RI", "SC", "AR", "NC", "GA", "KY"))
+text.right.us <- setdiff(1:nrow(data.usa.1), text.left.us)
+pos.text.us <- ifelse(1:nrow(data.usa.1) %in% text.left.us, 2, 4)
+```
+
+왼쪽, 오른쪽 위치를 조정한 주 약칭을 다시 넣는다.
+
+```{r, right or left, fig.width = 12, fig.height = 9}
+plot(data.usa.1, pch = 20, col = "red", xlim = c(0.39, 0.51), ylim = c(-1.5, 2.0))
+text(data.usa.1, labels = Abb, pos = pos.text.us)
+```
+
+점 아래에 약칭을 넣을 주들의 인덱스를 찾는다. 왼쪽 인덱스, 오른쪽 인덱스에서 조정한다.
+
+```{r, Abb under dots}
+text.down.us <- which(Abb %in% c("WA", "AR", "GA", "MN"))
+which(text.left.us %in% text.down.us)
+text.left.us <- setdiff(text.left.us, text.down.us)
+text.right.us <- setdiff(text.right.us, text.down.us)
+pos.text.us <- ifelse(1:nrow(data.usa.1) %in% text.down.us, 1, ifelse(1:nrow(data.usa.1) %in% text.left.us, 2, 4))
+```
+
+약칭 위치를 아래로 조정한 산점도를 다시 그린다.
+
+```{r, point under, fig.width = 12, fig.height = 9}
+plot(data.usa.1, pch = 20, col = "red", xlim = c(0.39, 0.51), ylim = c(-1.5, 2.0))
+text(data.usa.1, labels = Abb, pos = pos.text.us)
+```
+
+상관계수를 추가한다.
+
+```{r, correlation, fig.width = 12, fig.height = 9}
+plot(data.usa.1, pch = 20, col = "red", xlim = c(0.39, 0.51), ylim = c(-1.5, 2.0))
+text(data.usa.1, labels = Abb, pos = pos.text.us)
+cor.us <- cor(data.usa.1$HS.index, data.usa.1$Gini)
+text(x = 0.42, y = 1.5, labels = paste("r =", round(cor.us, digits = 2)), col = "red", cex = 1.2)
+```
+
+단순회귀선을 추가한다.
+
+```{r fig.width=12, fig.height=9}
+plot(data.usa.1, pch = 20, col = "red", xlim = c(0.39, 0.51), ylim = c(-1.5, 2.0))
+text(data.usa.1, labels = Abb, pos = pos.text.us)
+text(x = 0.42, y = 1.5, labels = paste("r =", round(cor.us, digits = 2)), col = "red", cex = 1.2)
+# lm.ineq.us <- lm(HS.index ~ Gini, data = data.usa.1)
+lm.ineq.us <- lm(data.usa.1[2:1])
+abline(lm.ineq.us$coef, col = "blue")
+# abline(lm(HS.index ~ Gini, data = data.usa.1)$coef)
+```
+
+주제목을 추가하고, `xlab`, `ylab`을 수정한다. 수직축의 의미를 명확히 한다.
+
+```{r, labs and title, fig.width = 12, fig.height = 9}
+plot(data.usa.1, pch = 20, col = "red", xlim = c(0.39, 0.51), ylim = c(-1.5, 2.0), ann = FALSE)
+text(data.usa.1, labels = Abb, pos = pos.text.us)
+text(x = 0.42, y = 1.5, labels = paste("r =", round(cor.us, digits = 2)), col = "red", cex = 1.2)
+abline(lm.ineq.us$coef, col = "blue")
+mtext(c("Better", "Worse"), side = 2, at = c(-1.8, 2.3), las = 1)
+main.title.us <- "Income Inequality vs Health and Social Index (USA)"
+x.lab.us <- "Gini Coefficients"
+y.lab.us <- "Index of Health and Social Problems"
+title(main = main.title.us, xlab = x.lab.us, ylab = y.lab.us)
+```
+
+<!--
+```{r, save}
+save.image(file = "Inequality_Index_HS.RData")
+```
+-->
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,50 @@
+---
+title: "Income Inequality vs Index of Health and Social Problems : US Data"
+author: "coop711"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+### Data Preparation
+
+`xlsx` package는 Excel 자료를 다루는 데 매우 유용한데, `read.xlsx(filename, n)`의 구조로 되어 있으며, 여기서 `n`은 엑셀 시트의 번호이다.
+
+```{r, data, message = FALSE}
+library(knitr)
+# install.packages("xlsx", repos = "https://cran.rstudio.com")
+library(xlsx)
+```
+
+`xlsx` 패키지를 이용하여 자료를 읽어들인다. 
+
+```{r, data_US}
+data.usa <- read.xlsx("../data/USA-inequality.xls", 1, stringsAsFactors = FALSE)
+str(data.usa)
+```
+
+당장 필요한 변수들만 모아서 data frame으로 재구성한다. 변수명 설정에 유의한다.
+
+```{r, variables}
+data.usa.1 <- data.frame(Gini = data.usa$Income.Inequality,  HS.index = data.usa$Index.of.health...social.problems)
+str(data.usa.1)
+Gini <- data.usa.1$Gini
+State <- data.usa$State
+Abb <- data.usa$State.Abbrev
+options(digits = 3)
+kable(data.frame(State = State, State.Abb = Abb, data.usa.1))
+```
+
+### Save
+
+```{r, save}
+save.image(file = "Inequality_Index_HS_US.RData")
+```
+
+
+
+
+
+
+
+
+
