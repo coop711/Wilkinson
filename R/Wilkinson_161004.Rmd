@@ -22,6 +22,7 @@ Equality Trust에서 기부금을 받고 제공하는 두 종류의 자료 중 2
 library(knitr)
 # load("Inequality_Index_HS.rda")
 data.full <- read.csv("../data/international-inequality_GDP.csv", stringsAsFactors = FALSE)
+# data.full <- read.csv("../data/international-inequality_GDP.csv", stringsAsFactors = TRUE)
 str(data.full)
 ```
 
@@ -29,7 +30,9 @@ str(data.full)
 `which()`를 이용하여 해당 인덱스를 찾고, 나라명을 추출한다.
 
 ```{r, which}
+is.na(data.full$Index.of.health...social_problems)
 (country.na <- which(is.na(data.full$Index.of.health...social_problems)))
+# country.na <- is.na(data.full$Index.of.health...social_problems)
 data.full$Country[country.na]
 ```
 
@@ -46,6 +49,7 @@ which(names(data.full) == "Index.of.health...social_problems")
 options(digits = 2)
 v.names <- c("Country", "Income.inequality", "Index.of.health...social_problems", "GDP_WB")
 data.21 <- data.full[-c(11, 18), v.names]
+str(data.21)
 names(data.21)[3] <- "Index.HS"
 kable(data.21)
 ```
@@ -56,7 +60,7 @@ kable(data.21)
 
 ```{r, base plot}
 Index_inequality.df <- data.21[c("Income.inequality", "Index.HS")]
-# str(Index_inequality.df)
+str(Index_inequality.df)
 plot(Index_inequality.df)
 cor.1 <- cor(data.21["Income.inequality"], data.21["Index.HS"])
 cor.1
@@ -135,6 +139,7 @@ text.up
 text.left <- setdiff(1:nrow(data.21), c(text.right, text.up))
 text.left
 pos.text <- ifelse(1:nrow(data.21) %in% text.up, 3, ifelse(1:nrow(data.21) %in% text.left, 2, 4))
+pos.text
 ```
 
 이제 조정된 text 외에 x-축과 y-축에 적절한 라벨과 메인 타이틀을 넣어보자.
@@ -170,7 +175,7 @@ x.lab <- "Income Inequality (5th Ratio)"
 y.lab <- "Index of Health and Social Problems"
 title(main = main.title, xlab = x.lab, ylab = y.lab)
 mtext(c("Better", "Worse"), side = 2, at = c(-1.8, 2.8), las = 1)
-text(x = 5, y = 1.5, labels = paste("r =", round(cor(Index_inequality.df[1], Index_inequality.df[2]), digits = 2)))
+text(x = 5, y = 1.5, labels = paste("r =", round(cor.1, digits = 2)))
 # dev.copy(png, file = "../pics/inequality_health_social_en_72dpi.png", width = 640, height = 480)
 # dev.off()
 ```
@@ -185,7 +190,7 @@ x.lab <- "Income Inequality (5th Ratio)"
 y.lab <- "Index of Health and Social Problems"
 title(main = main.title, xlab = x.lab, ylab = y.lab)
 mtext(c("Better", "Worse"), side = 2, at = c(-1.8, 2.8), las = 1)
-text(x = 5, y = 1.5, labels = paste("r =", round(cor(Index_inequality.df[1], Index_inequality.df[2]), digits = 2)))
+text(x = 5, y = 1.5, labels = paste("r =", round(cor.1, digits = 2)))
 lm.ineq <- lm(Index.HS ~ Income.inequality, data = Index_inequality.df)
 # lm.ineq <- lm(Index_inequality.df[2:1])
 abline(lm.ineq$coef, col = "blue")
