@@ -30,6 +30,7 @@ data.full$Country[country.na]
 
 ```{r, NA in Index.of.health...social_problems}
 names(data.full)
+names(data.full) == "Index.of.health...social_problems"
 which(names(data.full) == "Index.of.health...social_problems")
 ```
 
@@ -38,7 +39,10 @@ which(names(data.full) == "Index.of.health...social_problems")
 ```{r, data for 21 countries}
 options(digits = 2)
 v.names <- c("Country", "Income.inequality", "Index.of.health...social_problems", "GDP_WB")
-data.21 <- data.full[-c(11, 18), v.names]
+names(data.full) %in% v.names
+v.names.index <- which(names(data.full) %in% v.names)
+# data.21 <- data.full[-c(11, 18), v.names]
+data.21 <- data.full[-c(11, 18), v.names.index]
 str(data.21)
 names(data.21)[3] <- "Index.HS"
 kable(data.21)
