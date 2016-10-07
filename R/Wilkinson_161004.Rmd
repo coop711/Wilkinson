@@ -23,12 +23,22 @@ str(data.21)
 ### Barplots for Income Inequalities
 
 ```{r, barplot of 5th ratios, fig.width = 12, fig.height = 8}
-par(mai = c(2.0, 0.8, 0.8, 0.4) + 0.2)
+# par(mai = c(2.0, 0.8, 0.8, 0.4) + 0.2)
 (fifth <- data.21$Income.inequality)
+# barplot(fifth, names)
 (Country <- data.21$Country)
+# barplot(fifth, names.arg = Country)
 (o.fifth <- order(fifth))
-b.fifth <- barplot(fifth[o.fifth], names.arg = Country[o.fifth], col = rev(rainbow(nrow(data.21), start = 0, end = 4/6)), ylim = c(0, 10), xpd = FALSE, las = 2)
+data.frame(Country, fifth, o.fifth, fifth[o.fifth], Country[o.fifth])
+ro.fifth <- order(fifth, decreasing = TRUE)
+data.frame(Country, fifth, o.fifth, ro.fifth, fifth[ro.fifth], Country[ro.fifth])
+# barplot(fifth[o.fifth])
+# barplot(fifth[o.fifth], names.arg = Country[o.fifth])
+# barplot(fifth[o.fifth], names.arg = Country[o.fifth],  col = rev(rainbow(nrow(data.21), start = 0, end = 2/3)))
+# barplot(fifth[o.fifth], names.arg = Country[o.fifth],  col = rev(rainbow(nrow(data.21), start = 0, end = 2/3)), las = 2)
+b.fifth <- barplot(fifth[o.fifth], names.arg = Country[o.fifth], col = rev(rainbow(nrow(data.21), start = 0, end = 2/3)), ylim = c(0, 10), xpd = FALSE, las = 2)
 text(x = b.fifth, y = fifth[o.fifth] + 0.3, labels = format(fifth[o.fifth], digits = 3))
+# text(x = b.fifth, y = fifth[o.fifth], labels = format(fifth[o.fifth], digits = 3))
 # text(x = b.fifth[c(1, 11, 21)], y = fifth[o.fifth][c(1, 11, 21)] + 0.3, labels = format(fifth[o.fifth][c(1, 11, 21)], digits = 3))
 title(main = "Fifth Ratios of Selected Countries")
 ```
@@ -221,7 +231,7 @@ title(main = main.title.kr, xlab = x.lab.kr, ylab = y.lab.kr)
 mtext(c("좋음", "나쁨"), side = 2, at = c(-1.8, 2.8), las = 1)
 ```
 
-상관계수 r = `r cor.1` 를 도표 안에 표시하고 별도의 파일로 출력하려면,
+상관계수 r = `r round(cor.1, digits = 2)` 를 도표 안에 표시하고 별도의 파일로 출력하려면,
 
 ```{r fig.width=8, fig.height=6}
 # par(family = "HCR Dotum LVT")
