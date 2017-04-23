@@ -20,8 +20,8 @@ str(data.full)
 `which()`를 이용하여 해당 인덱스를 찾고, 나라명을 추출한다.
 
 ```{r, which}
-is.na(data.full$Index.of.health...social_problems)
-# country.na <- is.na(data.full$Index.of.health...social_problems)
+# is.na(data.full$Index.of.health...social_problems)
+# (country.na <- is.na(data.full$Index.of.health...social_problems))
 (country.na <- which(is.na(data.full$Index.of.health...social_problems)))
 data.full$Country[country.na]
 ```
@@ -40,11 +40,12 @@ which(names(data.full) == "Index.of.health...social_problems")
 options(digits = 2)
 v.names <- c("Country", "Income.inequality", "Index.of.health...social_problems", "GDP_WB")
 names(data.full) %in% v.names
-v.names.index <- which(names(data.full) %in% v.names)
-# data.21 <- data.full[-c(11, 18), v.names]
-data.21 <- data.full[-c(11, 18), v.names.index]
+(v.names.index <- which(names(data.full) %in% v.names))
+data.21 <- data.full[-c(11, 18), v.names]
+# data.21 <- data.full[-c(11, 18), v.names.index]
 str(data.21)
 names(data.21)[3] <- "Index.HS"
+str(data.21)
 kable(data.21)
 ```
 

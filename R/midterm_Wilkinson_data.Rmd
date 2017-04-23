@@ -1,0 +1,67 @@
+#### 4 Wilkinson Data
+
+##### 4.1
+
+다음 코드묶음에서 `stringsAsFactors = FALSE`를 `stringsAsFactors = TRUE`로 바꾸면 당초 `character` class이었던 나라명이 무슨 class로 바뀌는가?
+
+```{r, data with GDP, echo = TRUE, results = 'hide'}
+data.full <- read.csv("../data/international-inequality_GDP.csv", stringsAsFactors = FALSE)
+# data.full <- read.csv("../data/international-inequality_GDP.csv", stringsAsFactors = TRUE)
+```
+
+가. `numeric`
+
+나. `factor`
+
+다. `data.frame`
+
+라. `list`
+
+##### 4.2
+
+다음 코드묶음에서 각 코드의 수행결과를 제대로 짝지은 것은?
+
+```{r, which, echo = TRUE, results = 'hide'}
+# is.na(data.full$Index.of.health...social_problems)
+# (country.na <- is.na(data.full$Index.of.health...social_problems))
+(country.na <- which(is.na(data.full$Index.of.health...social_problems)))
+data.full$Country[country.na]
+```
+
+가. `is.na(data.full$Index.of.health...social_problems)` : `numeric`
+
+나. `(country.na <- is.na(data.full$Index.of.health...social_problems))` : `logical`
+
+다. `(country.na <- which(is.na(data.full$Index.of.health...social_problems)))` : `logical`
+
+라. `data.full$Country[country.na]` : `factor`
+
+##### 4.3
+
+다음 코드묶음에서 `data.full[-c(11, 18), v.names]`의 수행결과를 제대로 설명한 것은?
+
+```{r, data for 21 countries, echo = TRUE, results = 'hide'}
+v.names <- c("Country", "Income.inequality", "Index.of.health...social_problems", "GDP_WB")
+names(data.full) %in% v.names
+(v.names.index <- which(names(data.full) %in% v.names))
+data.21 <- data.full[-c(11, 18), v.names]
+# data.21 <- data.full[-c(11, 18), v.names.index]
+```
+
+가. `data.full`의 11번 및 18번쨰 행과 `v.names`에 이름이 나오는 열을 추출한다. 
+
+나. `data.full`의 11번 및 18번쨰 행을 제외한 나머지 행과 `v.names`에 이름이 나오는 열을 추출한다. 
+
+다. `data.full`의 11번 및 18번쨰 행과 `v.names`에 이름이 나오는 열을 제외한 나머지 열을 추출한다. 
+
+라. `data.full`의 11번 및 18번쨰 행을 제외한 나머지 행과 `v.names`에 이름이 나오는 열을 제외한 나머지 열을 추출한다. 
+<P style = "page-break-before:always">
+
+
+
+
+
+
+
+
+
