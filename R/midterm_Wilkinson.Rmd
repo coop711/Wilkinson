@@ -1,0 +1,167 @@
+```{r, loading data with GDP, echo = FALSE, results = 'hide'}
+library(knitr)
+load("Inequality_Index_HS.RData")
+str(data.full)
+str(data.21)
+```
+
+#### 5. Plots
+
+##### 5.1
+
+다음 barplot과 이를 그리는 데 사용된 코드에서 barplot을 그리는 데 꼭 있어야 하는 코드는 무엇인가?
+
+```{r, barplot no show, echo = FALSE, fig.width = 12, fig.height = 8}
+fifth <- data.21$Income.inequality
+Country <- data.21$Country
+o.fifth <- order(fifth)
+N <- nrow(data.21)
+b.fifth <- barplot(fifth[o.fifth], names.arg = Country[o.fifth], col = rainbow(N, start = 1/6, end = 1), ylim = c(0, 10), xpd = FALSE, las = 2)
+text(x = b.fifth, y = fifth[o.fifth] + 0.3, labels = format(fifth[o.fifth], digits = 3))
+title(main = "Fifth Ratios of Selected Countries")
+```
+
+```{r, barplot of 5th ratios text annotation, echo = TRUE, fig.width = 12, fig.height = 8, fig.keep = "none"}
+fifth <- data.21$Income.inequality
+Country <- data.21$Country
+o.fifth <- order(fifth)
+N <- nrow(data.21)
+b.fifth <- barplot(fifth[o.fifth], names.arg = Country[o.fifth], col = rainbow(N, start = 1/6, end = 1), ylim = c(0, 10), xpd = FALSE, las = 2)
+text(x = b.fifth, y = fifth[o.fifth] + 0.3, labels = format(fifth[o.fifth], digits = 3))
+title(main = "Fifth Ratios of Selected Countries")
+```
+
+가. `fifth[o.fifth]`
+
+나. `names.arg = Country[o.fifth]`
+
+다. `col = rainbow(N, start = 1/6, end = 1)`
+
+라. `ylim = c(0, 10)`
+
+##### 5.2
+
+위의 코드묶음에서 나라 이름을 막대 밑에 나오게 하는 역할을 수행하는 코드는 무엇인가?
+
+가. `fifth[o.fifth]`
+
+나. `names.arg = Country[o.fifth]`
+
+다. `col = rainbow(N, start = 1/6, end = 1)`
+
+라. `ylim = c(0, 10)`
+
+##### 5.3
+
+위의 코드묶음에서 막대의 색깔을 정하는 역할을 수행하는 코드는 무엇인가?
+
+가. `fifth[o.fifth]`
+
+나. `names.arg = Country[o.fifth]`
+
+다. `col = rainbow(N, start = 1/6, end = 1)`
+
+라. `ylim = c(0, 10)`
+
+##### 5.4
+
+위의 코드묶음에서 막대 안쪽으로 소득5분위계수를 써 주려면 `text(...)` 안에서 어떤 코드를 바꿔야 하는가?
+
+가. `x = b.fifth`
+
+나. `y = fifth[o.fifth] + 0.3`
+
+다. `labels = format(fifth[o.fifth], digits = 3)`
+
+라. `digits = 3`
+
+
+#### Scatter Diagram 
+
+##### 5.5
+
+다음 산점도와 이 산점도를 그리는 데 사용된 코드묶음에서 점의 색깔을 정하는 코드는 무엇인가?
+
+가. `pch = 20`
+
+나. `col = "red"`
+
+다. `xlim = c(3, 9), ylim = c(-1.5, 2.5)`
+
+라. `ann = FALSE`
+
+```{r, plot no show, echo = FALSE, fig.width = 8, fig.height = 6}
+Index_inequality.df <- data.21[c("Income.inequality", "Index.HS")]
+cor.1 <- cor(data.21["Income.inequality"], data.21["Index.HS"])
+Country <- data.21[, "Country"]
+text.left <- which(Country %in% c("Austria", "Denmark", "Germany", "Netherlands"))
+text.right <- setdiff(1:nrow(data.21), text.left)
+pos.text <- ifelse(1:nrow(data.21) %in% text.left, 2, 4)
+text.up <- which(Country %in% "Germany")
+text.left <- setdiff(1:nrow(data.21), c(text.right, text.up))
+pos.text <- ifelse(1:nrow(data.21) %in% text.up, 3, ifelse(1:nrow(data.21) %in% text.left, 2, 4))
+plot(Index_inequality.df, pch = 20, col = "red", xlim = c(3, 9), ylim = c(-1.5, 2.5), ann = FALSE)
+text(Index_inequality.df, labels = Country, pos = pos.text, cex = 0.8)
+main.title <- "Income Inequality vs Index of Health and Social Problems" 
+x.lab <- "Income Inequality (5th Ratio)"
+y.lab <- "Index of Health and Social Problems"
+title(main = main.title, xlab = x.lab, ylab = y.lab)
+mtext(c("Better", "Worse"), side = 2, at = c(-1.8, 2.8), las = 1)
+text(x = 5, y = 1.5, labels = paste("r =", round(cor.1, digits = 2)))
+```
+
+```{r, lm to abline, echo = TRUE, fig.width = 8, fig.height = 6, fig.keep = "none"}
+Index_inequality.df <- data.21[c("Income.inequality", "Index.HS")]
+cor.1 <- cor(data.21["Income.inequality"], data.21["Index.HS"])
+Country <- data.21[, "Country"]
+text.left <- which(Country %in% c("Austria", "Denmark", "Germany", "Netherlands"))
+text.right <- setdiff(1:nrow(data.21), text.left)
+pos.text <- ifelse(1:nrow(data.21) %in% text.left, 2, 4)
+text.up <- which(Country %in% "Germany")
+text.left <- setdiff(1:nrow(data.21), c(text.right, text.up))
+pos.text <- ifelse(1:nrow(data.21) %in% text.up, 3, ifelse(1:nrow(data.21) %in% text.left, 2, 4))
+plot(Index_inequality.df, pch = 20, col = "red", xlim = c(3, 9), ylim = c(-1.5, 2.5), ann = FALSE)
+text(Index_inequality.df, labels = Country, pos = pos.text, cex = 0.8)
+main.title <- "Income Inequality vs Index of Health and Social Problems" 
+x.lab <- "Income Inequality (5th Ratio)"
+y.lab <- "Index of Health and Social Problems"
+title(main = main.title, xlab = x.lab, ylab = y.lab)
+mtext(c("Better", "Worse"), side = 2, at = c(-1.8, 2.8), las = 1)
+text(x = 5, y = 1.5, labels = paste("r =", round(cor.1, digits = 2)))
+```
+
+##### 5.6
+
+위의 코드묶음에서 점의 모양을 정하는 코드는 무엇인가?
+
+가. `pch = 20`
+
+나. `col = "red"`
+
+다. `xlim = c(3, 9), ylim = c(-1.5, 2.5)`
+
+라. `ann = FALSE`
+
+##### 5.7
+
+위의 그림에서 `Germany`의 경우 `pos = `이 얼마로 부여되었는가?
+
+가. `1`
+
+나. `2`
+
+다. `3`
+
+라. `4`
+
+##### 5.8
+
+위의 그림에서 상관계수 정보를 소숫점 2자리로 줄인 역할은 어떤 코드가 수행하는가?
+
+가. `x = 5, y = 1.5`
+
+나. `labels = paste("r =", `
+
+다. `round(cor.1, digits = 2))`
+
+라. `digits = 2`
