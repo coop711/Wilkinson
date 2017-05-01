@@ -87,7 +87,7 @@ b.fifth <- barplot(fifth[o.fifth], names.arg = Country[o.fifth], col = rainbow(N
 text(x = b.fifth, y = fifth[o.fifth] + 0.3, labels = format(fifth[o.fifth], digits = 3))
 # text(x = b.fifth, y = fifth[o.fifth], labels = format(fifth[o.fifth], digits = 3))
 # text(x = b.fifth[c(1, 11, 21)], y = fifth[o.fifth][c(1, 11, 21)] + 0.3, labels = format(fifth[o.fifth][c(1, 11, 21)], digits = 3))
-title(main = "Fifth Ratios of Selected Countries")
+title(main = "Fifth Ratios of Selected Countries", cex.main = 2)
 ```
 
 <P style = "page-break-before:always">
@@ -100,6 +100,7 @@ title(main = "Fifth Ratios of Selected Countries")
 Index_inequality.df <- data.21[c("Income.inequality", "Index.HS")]
 str(Index_inequality.df)
 plot(Index_inequality.df)
+cor(Index_inequality.df)
 cor.1 <- cor(data.21["Income.inequality"], data.21["Index.HS"])
 cor.1
 ```
@@ -116,9 +117,11 @@ cor(Index_inequality.df)
 (Country <- data.21[, "Country"])
 (Country.2 <- data.21["Country"])
 (Country.3 <- data.21["Country"]$Country)
+(Country.4 <- data.21[["Country"]])
 str(Country)
 str(Country.2)
 str(Country.3)
+str(Country.4)
 ```
 
 <P style = "page-break-before:always">
@@ -240,7 +243,7 @@ x.lab <- "Income Inequality (5th Ratio)"
 y.lab <- "Index of Health and Social Problems"
 title(main = main.title, xlab = x.lab, ylab = y.lab)
 mtext(c("Better", "Worse"), side = 2, at = c(-1.8, 2.8), las = 1)
-text(x = 5, y = 1.5, labels = paste("r =", round(cor.1, digits = 2)))
+text(x = 5, y = 1.5, labels = paste("r =", round(cor.1, digits = 2)), col = "blue")
 # dev.copy(png, file = "../pics/inequality_health_social_en_72dpi.png", width = 640, height = 480)
 # dev.off()
 ```
