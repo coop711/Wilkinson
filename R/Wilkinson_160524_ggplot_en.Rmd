@@ -22,10 +22,10 @@ Equality Trust에서 기부금을 받고 제공하는 두 종류의 자료 중 2
 
 ```{r, data with GDP}
 library(knitr)
-# rm(list = ls())
-# getwd()
+library(RColorBrewer)
 load("Inequality_Index_HS.rda")
-data.full <- read.csv("../data/international-inequality_GDP.csv", stringsAsFactors = FALSE)
+data.full <- read.csv("../data/international-inequality_GDP.csv", 
+                      stringsAsFactors = FALSE)
 str(data.full)
 ```
 
@@ -35,48 +35,52 @@ str(data.full)
 
 ### Barplot(geom_bar)
 
-```{r, geom_bar, fig.width = 12, fig.height = 9}
+```{r, geom_bar, fig.width = 12, fig.height = 6}
 # par(mai = c(2.0, 0.8, 0.8, 0.4) + 0.02)
 library(ggplot2)
+# colfunc <- colorRampPalette(brewer.pal(9, "YlOrRd"))
+# colfunc <- colorRampPalette(brewer.pal(11, "RdYlGn"))
+colfunc <- colorRampPalette(c("Yellow", "Green", "Blue", "Red"))
+fill.col <- colfunc(23)
 o.ineq <- order(data.full$Income.inequality)
 fifth_ratio <- data.full$Income.inequality
 Country <- data.full$Country
 data.full$Country.o <- factor(data.full$Country, levels = Country[o.ineq])
 g1 <- ggplot(data = data.full[c("Income.inequality", "Country.o")]) 
-g2 <- g1 + geom_bar(aes(x = Country.o, y = Income.inequality), stat = "identity", width = 0.8, fill = rev(rainbow(23, start = 0, end = 2/3)))
+g2 <- g1 + 
+  geom_bar(mapping = aes(x = Country.o, y = Income.inequality), 
+           stat = "identity", 
+           width = 0.8, 
+           fill = fill.col)
+#           fill = rev(rainbow(23, start = 0, end = 2/3)))
+
 g2
-```
-
-<P style = "page-break-before:always">
-
-```{r, fig.width = 12, fig.height = 9}
 g3 <- g2 + 
   theme_bw()
 g4 <- g3 + 
 #  theme(axis.text.x = element_blank()) + 
   theme(axis.ticks.x = element_blank()) +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
+  theme(axis.text.x = element_text(angle = 90, 
+                                   hjust = 1, 
+                                   vjust = 0.5))
 g4
-```
-
-<P style = "page-break-before:always">
-
-```{r, fig.width = 12, fig.height = 9}
 g5 <- g4 +
-  geom_text(aes(x = Country.o, y = Income.inequality + 0.2, label = format(Income.inequality, digits = 3))) 
+  geom_text(aes(x = Country.o, 
+                y = Income.inequality + 0.2, 
+                label = format(Income.inequality, 
+                               digits = 3, 
+                               nsmall = 2))) 
 g5
-```
-
-<P style = "page-break-before:always">
-
-```{r, fig.width = 12, fig.height = 9}
 g6 <- g5 +
-  labs(title = "Income Inequality (Fifth Ratio)", x = "Countries", y = "Fifth Ratio")
+  labs(title = "Income Inequality (Fifth Ratio)", 
+       x = "Countries", 
+       y = "Fifth Ratio")
 g6
-ggsave("../pics/Fifth_Ratio_ggplot.png", g6, width = 12, height = 6)
+ggsave("../pics/Fifth_Ratio_ggplot.png", 
+       g6, 
+       width = 12, 
+       height = 6)
 ```
-
-<P style = "page-break-before:always">
 
 ## 소득불평등과 건강 및 사회문제
 
@@ -101,44 +105,42 @@ which(names(data.full) == "Index.of.health...social_problems")
 
 ```{r, data for 21 countries}
 options(digits = 2)
-v.names <- c("Country", "Income.inequality", "Index.of.health...social_problems", "GDP_WB")
+v.names <- c("Country", 
+             "Income.inequality", 
+             "Index.of.health...social_problems", 
+             "GDP_WB")
 data.21 <- data.full[-c(11, 18), v.names]
 names(data.21)[3] <- "Index.HS"
-```
-
-<P style = "page-break-before:always">
-
-```{r}
 kable(data.21)
 ```
-
-<P style = "page-break-before:always">
 
 ### Plots
 
 우선 소득불평등과 건강 및 사회문제 지표의 관계를 대략적으로 살펴보면,
 
-```{r, geom_points, fig.width = 8, fig.height = 5}
-Index_inequality.df <- data.21[c("Country", "Income.inequality", "Index.HS")]
+```{r, geom_points, fig.width = 8, fig.height = 6}
+Index_inequality.df <- data.21[c("Country", 
+                                 "Income.inequality", 
+                                 "Index.HS")]
 # plot(Index_inequality.df)
 # plot(data.21[c("Income.inequality", "Index.HS")])
 cor.1 <- cor(data.21["Income.inequality"], data.21["Index.HS"])
 cor.1
-p1 <- ggplot(data = Index_inequality.df, aes(x = Income.inequality, y = Index.HS, label = Country)) + theme_bw()
-p2 <- p1 + geom_point(col = "red")
+p1 <- ggplot(data = Index_inequality.df, 
+             mapping = aes(x = Income.inequality, 
+                           y = Index.HS, 
+                           label = Country))
+p1.1 <- p1 + geom_point(col = "red")
+p1.1
+p1.2 <- p1.1 + geom_text()
+p1.2
+p2 <- p1.1 + theme_bw()
 p2
-```
-
-<P style = "page-break-before:always">
-
-```{r, fig.width = 8, fig.height = 5}
-p3 <- p2 + geom_text()
-p3
 ```
 
 텍스트 위치를 옮겨 보자. 점의 왼편으로 옮겨야 할 나라들(`ggplot`에서는 `hjust = "right"`)을 먼저 찾아보자.
 
-```{r, label left, fig.width = 8, fig.height = 5}
+```{r, label left, fig.width = 8, fig.height = 6}
 Country <- data.21$Country
 which(Country %in% c("Austria", "Denmark", "Germany", "Netherlands"))
 text.left <- which(Country %in% c("Austria", "Denmark", "Germany", "Netherlands"))
@@ -146,20 +148,14 @@ text.left
 text.right <- setdiff(1:nrow(data.21), text.left)
 text.right
 hjust.text <- ifelse(1:nrow(data.21) %in% text.left, "right", "left")
-```
-
-<P style = "page-break-before:always">
-
-```{r, fig.width = 8, fig.height = 5}
-p4 <- p2 + geom_text(hjust = hjust.text)
+p4 <- p2 + 
+  geom_text(hjust = hjust.text)
 p4
 ```
 
-<P style = "page-break-before:always">
-
 독일의 라벨을 위로 붙이면 보기가 나아질 것으로 생각되므로,
 
-```{r, points for germany, fig.width = 8, fig.height = 5}
+```{r, points for germany, fig.width = 8, fig.height = 6}
 which(Country %in% "Germany")
 text.up <- which(Country %in% "Germany")
 text.up
@@ -167,49 +163,60 @@ text.left <- setdiff(1:nrow(data.21), c(text.right, text.up))
 text.left
 vjust.text <- ifelse(1:nrow(data.21) %in% text.up, "bottom", "center")
 hjust.text <- ifelse(1:nrow(data.21) %in% text.up, "middle", hjust.text)
-p5 <- p2 + geom_text(hjust = hjust.text, vjust = vjust.text)
+p5 <- p2 + 
+  geom_text(hjust = hjust.text, 
+            vjust = vjust.text)
 p5
 ```
 
-<P style = "page-break-before:always">
-
 세부조정을 위해서 `nudge_x, nudge_y` 설정
 
-``````{r, nudge, fig.width = 8, fig.height = 5}
+``````{r, nudge, fig.width = 8, fig.height = 6}
 nudge_y.text <- ifelse(vjust.text == "bottom", 0.05, 0)
 nudge_x.text <- ifelse(hjust.text == "middle", 0, ifelse(hjust.text == "right", -0.05, 0.05))
-p6 <- p2 + geom_text(hjust = hjust.text, vjust = vjust.text, nudge_x = nudge_x.text, nudge_y = nudge_y.text)
+p6 <- p2 + 
+  geom_text(hjust = hjust.text, 
+            vjust = vjust.text, 
+            nudge_x = nudge_x.text, 
+            nudge_y = nudge_y.text)
 p6
 ```
-
-<P style = "page-break-before:always">
 
 건강 및 사회문제 지표의 경우 어느 방향이 좋은지 알 수 없으므로 친절하게 도표의 주변에(margin)에 알려주고,
 이제 조정된 text 외에 x-축과 y-축에 적절한 라벨과 메인 타이틀을 넣어보자.
 
-```{r, labels and title, fig.width = 8, fig.height = 5}
+```{r, labels and title, fig.width = 8, fig.height = 6}
 main.title <- "Income Inequality vs Index of Health and Social Problems" 
 x.lab <- "Income Inequality (Fifth Ratio)"
 y.lab <- "Index of Health and Social Problems"
 lowest <- data.21$Income.inequality[Country == "Japan"]
 highest <- data.21$Income.inequality[Country == "USA"]
 p7 <- p6 +
-  scale_x_continuous(name = x.lab, breaks = c(lowest, 4:8, highest), labels = c(lowest, 4:8, highest), limits = c(3, 9)) +
-  scale_y_continuous(name = y.lab, breaks = c(-1.5, -1:2, 2.5), labels = c(expression("Better" %down% ""), -1:2, expression("Worse" %up% "")), limits = c(-1.5, 2.5)) +
+  scale_x_continuous(name = x.lab, 
+                     breaks = c(lowest, 4:8, highest), 
+                     labels = c(lowest, 4:8, highest), 
+                     limits = c(3, 9)) +
+  scale_y_continuous(name = y.lab, 
+                     breaks = c(-1.5, -1:2, 2.5), 
+                     labels = c(expression("Better" %down% ""), 
+                                -1:2, 
+                                expression("Worse" %up% "")), 
+                     limits = c(-1.5, 2.5)) +
   labs(title = main.title)
 p7
 ```
 
-<P style = "page-break-before:always">
-
 상관계수를 텍스트로 그림 안에 넣어주고 여기까지 작업한 내용을 별도의 파일로 저장해 놓으려면,
 
-```{r, correlation and separate file, fig.width = 8, fig.height = 5}
-p8 <- p7 + annotate("text", x = 5, y = 1.5, label = paste("r =", round(cor.1, digits = 2)), size = 5)
+```{r, correlation and separate file, fig.width = 8, fig.height = 6}
+p8 <- p7 + 
+  annotate("text", 
+           x = 5, 
+           y = 1.5, 
+           label = paste("r =", round(cor.1, digits = 2)), 
+           size = 5)
 p8
 ```
-
-<P style = "page-break-before:always">
 
 선형회귀선을 추가하여 대체적인 추세를 보려면 `lm()`을 이용하되, `x`, `y`의 순서를 제대로 바꿔야 함에 유의.
 
@@ -217,75 +224,70 @@ p8
 lm.ineq <- lm(Index.HS ~ Income.inequality, data = Index_inequality.df)
 # lm.ineq <- lm(Index_inequality.df[2:1])
 # p9 <- p8 + geom_abline(intercept = lm.ineq$coef[1], slope = lm.ineq$coef[2], colour = "blue")
-p9 <- p8 + geom_smooth(method = "loess", se = FALSE, colour = "blue")
+p9 <- p8 + 
+  geom_smooth(method = "loess", 
+              se = FALSE, 
+              colour = "blue")
 p9
-ggsave("../pics/Inequality_vs_HS_Index_ggplot.png", p9, width = 8, height = 6)
+ggsave("../pics/Inequality_vs_HS_Index_ggplot.png", 
+       p9, 
+       width = 8, 
+       height = 6)
 ```
-
-<P style = "page-break-before:always">
 
 ## GDP와 건강 및 사회문제 지수
 
 ### Scatter Diagram
 
-```{r, GDP vs Index.HS}
+```{r, GDP vs Index.HS, fig.width = 10, fig.height = 7.5}
 (Index_GDP.df <- data.21[c("Country", "GDP_WB", "Index.HS")])
 cor.2 <- cor(data.21["GDP_WB"], data.21["Index.HS"])
 text.left.2 <- which(Country %in% c("Australia", "Belgium", "Canada", "France"))
 text.right.2 <- setdiff(1:nrow(data.21), c(text.left.2))
 hjust.text.2 <- ifelse(1:nrow(data.21) %in% text.left.2, "right", "left")
 nudge_x.text.2 <- ifelse(hjust.text.2 == "right", -250, 250)
-```
-
-<P style = "page-break-before:always">
-
-```{r, fig.width = 10, fig.height = 7.5 }
-gd1 <- ggplot(data = Index_GDP.df, aes(x = GDP_WB, y = Index.HS, label = Country)) + theme_bw()
-gd2 <- gd1 + 
+gd1 <- ggplot(data = Index_GDP.df, 
+              mapping = aes(x = GDP_WB, 
+                            y = Index.HS, 
+                            label = Country))
+gd1.1 <- gd1 + 
   geom_point(colour = "red")
-gd2
-```
-
-<P style = "page-break-before:always">
-
-```{r, fig.width = 10, fig.height = 7.5 }
+gd1.1
+gd2 <- gd1.1 + 
+  theme_bw()
 gd3 <- gd2 + 
   geom_text(hjust = hjust.text.2)
 gd3
-```
-
-<P style = "page-break-before:always">
-
-```{r, fig.width = 10, fig.height = 7.5 }
 gd4 <- gd2 + 
-  geom_text(hjust = hjust.text.2, nudge_x = nudge_x.text.2)
+  geom_text(hjust = hjust.text.2, 
+            nudge_x = nudge_x.text.2)
 gd4
-```
-
-<P style = "page-break-before:always">
-
-```{r, fig.width = 10, fig.height = 7.5 }
 main.title.2 <- "GDP vs Index of Health and Social Problems"
 x.lab.2 <- "GDP (Thousand Dollars)"
 y.lab.2 <- "Index of Health and Social Problems"
 gd5 <- gd4 + 
-  scale_x_continuous(name = x.lab.2, breaks = seq(20000, 70000, by = 10000), labels = seq(20, 70, by = 10), limits = c(20000, 70000)) +
-  scale_y_continuous(name = y.lab.2, breaks = c(-1.5, -1:2, 2.5), labels = c(expression("Better" %down% ""), -1:2, expression("Worse" %up% "")), limits = c(-1.5, 2.5)) + 
+  scale_x_continuous(name = x.lab.2, 
+                     breaks = seq(20000, 70000, by = 10000), 
+                     labels = seq(20, 70, by = 10), 
+                     limits = c(20000, 70000)) +
+  scale_y_continuous(name = y.lab.2, 
+                     breaks = c(-1.5, -1:2, 2.5), 
+                     labels = c(expression("Better" %down% ""), 
+                                -1:2, 
+                                expression("Worse" %up% "")), 
+                     limits = c(-1.5, 2.5)) + 
   labs(title = main.title.2)
 gd5
-```
-
-<P style = "page-break-before:always">
-
-```{r, fig.width = 10, fig.height = 7.5 }
-gd6 <- gd5 + annotate("text", x = 40000, y = 2, label = paste("r =", round(cor.2, digits = 2)), size = 5)
+gd6 <- gd5 + 
+  annotate("text", 
+           x = 40000, 
+           y = 2, 
+           label = paste("r =", round(cor.2, digits = 2)), 
+           size = 5)
 gd6
-```
-
-<P style = "page-break-before:always">
-
-```{r, fig.width = 10, fig.height = 7.5 }
-gd7 <- gd6 + geom_smooth(colour = "blue", se = FALSE)
+gd7 <- gd6 +
+  geom_smooth(colour = "blue", 
+              se = FALSE)
 gd7
 ```
 
