@@ -23,13 +23,14 @@ Equality Trust에서 기부금을 받고 제공하는 두 종류의 자료 중 2
 ```{r, data with GDP}
 library(knitr)
 library(RColorBrewer)
-load("Inequality_Index_HS.rda")
-data.full <- read.csv("../data/international-inequality_GDP.csv", 
-                      stringsAsFactors = FALSE)
+# load("Inequality_Index_HS.rda")
+# data.full <- read.csv("../data/international-inequality_GDP.csv", 
+#                      stringsAsFactors = FALSE)
 # rm(list = ls())
 # getwd()
 load("Inequality_Index_HS.RData")
-data.full <- read.csv("../data/international-inequality_GDP.csv", stringsAsFactors = FALSE)
+data.full <- read.csv("../data/international-inequality_GDP.csv", 
+                      stringsAsFactors = FALSE)
 str(data.full)
 ```
 
