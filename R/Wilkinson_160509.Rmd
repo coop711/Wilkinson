@@ -266,7 +266,7 @@ abline(lsfit.ineq$coefficients, col = "blue")
 
 GDP와의 관계
 
-```{r, GDP vs Index, fig.width = 12, fig.height = 9}
+```{r, GDP vs Index, fig.width = 8, fig.height = 6}
 par(family = "AppleGothic")
 Index_GDP.df <- data.21[c("GDP_WB", "Index.HS")]
 text.left.2 <- which(Country %in% c("Canada", "Belgium", "Australia"))
@@ -275,11 +275,17 @@ pos.text.2 <- ifelse(1:nrow(data.21) %in% text.left.2, 2, 4)
 plot(Index_GDP.df, pch = 20, col = "red", xlim = c(25000, 70000), ylim = c(-1.5, 2.5), xaxt = "n", ann = FALSE)
 axis(side = 1, at = seq(30000, 70000, by = 10000), labels = paste(3:7, "만", sep = ""))
 text(Index_GDP.df, labels = Country.kr, pos = pos.text.2, cex = 0.8)
-text(x = 40000, y = 2, labels = paste("r =", round(cor(Index_GDP.df[1], Index_GDP.df[2]), digits = 2)), cex = 1.2)
+text(x = 40000, y = 2, 
+     labels = paste("상관계수 =", 
+                    round(cor(Index_GDP.df[1], Index_GDP.df[2]), digits = 2)), 
+     cex = 1.0)
 main.title.2.kr <- "GDP와 건강 및 사회문제 지수"
 x.lab.2.kr <- "GDP(달러)"
 y.lab.2.kr <- "건강 및 사회문제 지수"
-title(main = main.title.2.kr, xlab = x.lab.2.kr, ylab = y.lab.2.kr)
+title(main = main.title.2.kr, 
+      xlab = x.lab.2.kr, 
+      ylab = y.lab.2.kr,
+      adj = 0.5)
 mtext(c("좋음", "나쁨"), side = 2, at = c(-1.8, 2.8), las = 1)
 dev.copy(png, file = "../pics/GDP_health_social_72dpi.png", width = 640, height = 480)
 dev.off()

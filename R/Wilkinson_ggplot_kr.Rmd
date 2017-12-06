@@ -1,7 +1,7 @@
 ---
 title: "Income Inequality vs Index of Health and Social Problems"
 author: "coop711"
-date: "`r Sys.Date()`"
+date: "2017-12-05"
 output: html_document
 ---
 
@@ -206,9 +206,9 @@ p6
 이제 조정된 text 외에 x-축과 y-축에 적절한 라벨과 메인 타이틀을 넣어보자.
 
 ```{r, labels and title, fig.width = 8, fig.height = 6}
-main.title <- "소득불평등과 건강 및 사회문제 지표" 
+main.title <- "소득불평등과 건강 및 사회문제 지수\n" 
 x.lab <- "소득불평등 (5분위배율)"
-y.lab <- "건강 및 사회문제 지표"
+y.lab <- "건강 및 사회문제 지수"
 lowest <- data.21$Income.inequality[Country == "Japan"]
 highest <- data.21$Income.inequality[Country == "USA"]
 p7 <- p6 + theme.kr +
@@ -222,7 +222,10 @@ p7 <- p6 + theme.kr +
                                 -1:2, 
                                 expression("나쁨" %up% "")), 
                      limits = c(-1.5, 2.5)) +
-  labs(title = main.title, family = "HCR Dotum LVT")
+  labs(title = main.title, 
+       family = "HCR Dotum LVT") +
+  theme(plot.title = element_text(hjust = 0.5, vjust = -0.5, size = 15),
+        plot.margin = margin(1, 1, 1, 1, "cm")) 
 p7
 ```
 
@@ -256,13 +259,11 @@ p9.2 <- p8 +
 p9
 p9.2
 ggsave("../pics/Inequality_vs_HS_Index_ggplot.png", 
-       p9, 
-       width = 8, 
-       height = 6)
+       p9,
+       dpi = 75)
 ggsave("../pics/Inequality_vs_HS_Index_ggplot_se.png", 
-       p9.2, 
-       width = 8, 
-       height = 6)
+       p9.2,
+       dpi = 75)
 ```
 ```
 
