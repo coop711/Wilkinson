@@ -1,7 +1,8 @@
 ---
 title: "Income Inequality vs Index of Health and Social Problems"
 author: "coop711"
-date: "2017-12-05"
+# date: "2017-12-05"
+date : "`r Sys.Date()`"
 output: html_document
 ---
 

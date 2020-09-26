@@ -90,7 +90,7 @@ cor(Index_inequality.df)
 
 각 점이 어느 나라를 나타내는지 표시하기 위하여 `text()` 를 활용하자. 동그라미 대신 까만 점으로 표시하고, 나라 이름을 올려보자. 
 
-```{r, text for countries, fig.width = 8, fig.height = 6}
+```{r, fig.width = 8, fig.height = 6}
 (Country <- data.21[, "Country"])
 (Country.2 <- data.21["Country"])
 (Country.3 <- data.21["Country"]$Country)
@@ -98,15 +98,12 @@ cor(Index_inequality.df)
 str(Country)
 str(Country.2)
 str(Country.3)
-<<<<<<< HEAD
-=======
 str(Country.4)
 ```
 
 <P style = "page-break-before:always">
 
 ```{r, text for countries, fig.width = 8, fig.height = 6 }
->>>>>>> da1468283e730cc9fc16c01fbaa7a3ef67f7b0f3
 plot(Index_inequality.df, pch = 20)
 text(Index_inequality.df, labels = Country)
 ```
@@ -256,7 +253,7 @@ Country.kr<-c("호주", "오스트리아", "벨기에", "캐나다", "덴마크"
 
 ```{r, Korean names, fig.width = 8, fig.height = 6}
 # library(extrafont)
-# par(family = "HCR Dotum LVT")
+par(family = "HCR Dotum LVT")
 plot(Index_inequality.df, pch = 20, col = "red", xlim = c(3, 9), ylim = c(-1.5, 2.5), ann = FALSE)
 text(Index_inequality.df[text.right, ], labels = Country.kr[text.right], pos = 4, cex = 0.8)
 text(Index_inequality.df[text.left, ], labels = Country.kr[text.left], pos = 2, cex = 0.8)
@@ -271,7 +268,7 @@ mtext(c("좋음", "나쁨"), side = 2, at = c(-1.8, 2.8), las = 1)
 상관계수 r = `r round(cor.1, digits = 2)` 를 도표 안에 표시하고 별도의 파일로 출력하려면,
 
 ```{r fig.width=8, fig.height=6}
-# par(family = "HCR Dotum LVT")
+par(family = "HCR Dotum LVT")
 plot(Index_inequality.df, pch = 20, col = "red", xlim = c(3, 9), ylim = c(-1.5, 2.5), ann = FALSE)
 text(Index_inequality.df, labels = Country.kr, pos = pos.text, cex = 0.8)
 main.title.kr <- "소득불평등과 건강 및 사회문제 지수"
@@ -284,11 +281,10 @@ text(x = 5, y = 1.5, labels = paste("r =", round(cor(Index_inequality.df[1], Ind
 # dev.off()
 ```
 
-
 선형회귀선을 이번에는 `lsfit`을 이용하여 삽입
 
 ```{r, simple regression line, fig.width = 8, fig.height = 6}
-# par(family = "HCR Dotum LVT")
+par(family = "HCR Dotum LVT")
 plot(Index_inequality.df, pch = 20, col = "red", xlim = c(3, 9), ylim = c(-1.5, 2.5), ann = FALSE)
 text(Index_inequality.df, labels = Country.kr, pos = pos.text, cex = 0.8)
 main.title.kr <- "소득불평등과 건강 및 사회문제 지수"
@@ -304,7 +300,7 @@ abline(lsfit.ineq$coefficients, col = "blue")
 GDP와의 관계
 
 ```{r, GDP vs Index, fig.width = 12, fig.height = 9}
-# par(family = "HCR Dotum LVT")
+par(family = "HCR Dotum LVT")
 Index_GDP.df <- data.21[c("GDP_WB", "Index.HS")]
 text.left.2 <- which(Country %in% c("Canada", "Belgium", "Australia"))
 text.right.2 <- setdiff(1:nrow(data.21), c(text.left.2))
