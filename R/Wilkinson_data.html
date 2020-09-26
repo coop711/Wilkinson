@@ -447,7 +447,7 @@ names(data_full) %in% v_names</code></pre>
 ## [25] FALSE FALSE FALSE FALSE FALSE  TRUE</code></pre>
 <pre class="r"><code>(v_names_index &lt;- which(names(data_full) %in% v_names))</code></pre>
 <pre><code>## [1]  1  2 13 30</code></pre>
-<pre class="r"><code>data_21 &lt;- data_full[-c(11, 18), v_names]
+<pre class="r"><code>data_21 &lt;- data_full[-country_na, v_names]
 # data_21 &lt;- data_full[-c(11, 18), v_names_index]
 str(data_21)</code></pre>
 <pre><code>## &#39;data.frame&#39;:    21 obs. of  4 variables:
