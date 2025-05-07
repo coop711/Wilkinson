@@ -42,7 +42,6 @@ str(data_full)
 ### Barplot(geom_bar)
 
 ```{r, geom_bar, fig.width = 12, fig.height = 6}
-# par(mai = c(2.0, 0.8, 0.8, 0.4) + 0.02)
 library(ggplot2)
 # colfunc <- colorRampPalette(brewer.pal(9, "YlOrRd"))
 # colfunc <- colorRampPalette(brewer.pal(11, "RdYlGn"))

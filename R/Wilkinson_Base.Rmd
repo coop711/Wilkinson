@@ -362,8 +362,8 @@ Country_kr<-c("호주", "오스트리아", "벨기에", "캐나다", "덴마크"
 ```
 
 ```{r, Korean names, fig.width = 8, fig.height = 6}
-# library(extrafont)
-par(family = "HCR Dotum LVT")
+library(extrafont)
+par(family = "KoPubWorldDotum Medium")
 plot(Index_inequality_df, 
      pch = 20, col = "red", xlim = c(3, 9), ylim = c(-1.5, 2.5), ann = FALSE)
 text(Index_inequality_df[text_right, ], labels = Country_kr[text_right], pos = 4, cex = 0.8)
@@ -379,7 +379,7 @@ mtext(c("좋음", "나쁨"), side = 2, at = c(-1.8, 2.8), las = 1)
 상관계수 r = `r round(cor_1, digits = 2)` 를 도표 안에 표시하고 별도의 파일로 출력하려면,
 
 ```{r fig.width=8, fig.height=6}
-par(family = "HCR Dotum LVT")
+par(family = "KoPubWorldDotum Medium")
 plot(Index_inequality_df, pch = 20, col = "red", xlim = c(3, 9), ylim = c(-1.5, 2.5), ann = FALSE)
 text(Index_inequality_df, labels = Country_kr, pos = pos_text, cex = 0.8)
 main_title_kr <- "소득불평등과 건강 및 사회문제 지수"
@@ -395,7 +395,7 @@ text(x = 5, y = 1.5, labels = paste("r =", round(cor(Index_inequality_df[1], Ind
 선형회귀선을 이번에는 `lsfit`을 이용하여 삽입
 
 ```{r, simple regression line, fig.width = 8, fig.height = 6}
-par(family = "HCR Dotum LVT")
+par(family = "KoPubWorldDotum Medium")
 plot(Index_inequality_df, pch = 20, col = "red", xlim = c(3, 9), ylim = c(-1.5, 2.5), ann = FALSE)
 text(Index_inequality_df, labels = Country_kr, pos = pos_text, cex = 0.8)
 main_title_kr <- "소득불평등과 건강 및 사회문제 지수"
@@ -411,22 +411,23 @@ abline(lsfit_ineq$coefficients, col = "blue")
 GDP와의 관계
 
 ```{r, GDP vs Index, fig.width = 12, fig.height = 9}
-par(family = "HCR Dotum LVT")
+par(family = "KoPubWorldDotum Medium")
+par(mar = c(5.1, 5.1, 4.1, 2.1))
 Index_GDP_df <- data_21[c("GDP_WB", "Index.HS")]
 text_left_2 <- which(Country %in% c("Canada", "Belgium", "Australia"))
 text_right_2 <- setdiff(1:nrow(data_21), c(text_left_2))
 pos_text_2 <- ifelse(1:nrow(data_21) %in% text_left_2, 2, 4)
 plot(Index_GDP_df, pch = 20, col = "red", xlim = c(25000, 70000), ylim = c(-1.5, 2.5), xaxt = "n", ann = FALSE)
-axis(side = 1, at = seq(30000, 70000, by = 10000), labels = paste(3:7, "만", sep = ""))
-text(Index_GDP_df, labels = Country_kr, pos = pos_text_2, cex = 0.8)
-text(x = 40000, y = 2, labels = paste("r =", round(cor(Index_GDP_df[1], Index_GDP_df[2]), digits = 2)), cex = 1.2)
+axis(side = 1, at = seq(30000, 70000, by = 10000), labels = paste(3:7, "만", sep = ""), cex.axis = 1.5)
+text(Index_GDP_df, labels = Country_kr, pos = pos_text_2, cex = 1.2)
+text(x = 40000, y = 2, labels = paste("r =", round(cor(Index_GDP_df[1], Index_GDP_df[2]), digits = 2)), cex = 1.5, col = "red")
 main_title_2.kr <- "GDP와 건강 및 사회문제 지수"
 x_lab_2.kr <- "GDP(달러)"
 y_lab_2.kr <- "건강 및 사회문제 지수"
-title(main = main_title_2.kr, xlab = x_lab_2.kr, ylab = y_lab_2.kr)
-mtext(c("좋음", "나쁨"), side = 2, at = c(-1.8, 2.8), las = 1)
-# dev.copy(png, file = "../pics/GDP_health_social_72dpi.png", width = 640, height = 480)
-# dev.off()
+title(main = main_title_2.kr, xlab = x_lab_2.kr, ylab = y_lab_2.kr, cex.main = 2.0, cex.lab = 1.5)
+mtext(c("좋음", "나쁨"), side = 2, at = c(-1.8, 2.8), las = 1, cex = 1.2)
+dev.copy(png, file = "../pics/GDP_health_social_72dpi.png", width = 840, height = 630)
+dev.off()
 ```
 
 <!--
